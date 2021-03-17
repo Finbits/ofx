@@ -48,6 +48,12 @@ defmodule Ofx.MixProject do
   end
 
   defp docs do
-    [source_ref: "v#{@version}", main: "readme"]
+    [
+      source_ref: "v#{@version}",
+      main: "readme",
+      extras: [
+        "README.md": [title: "Get starting"]
+      ]
+    ]
   end
 end

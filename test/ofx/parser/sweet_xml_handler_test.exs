@@ -29,5 +29,14 @@ defmodule Ofx.SweetXmlHandlerTest do
 
       assert result == {:error, %{data: {"", {:col, 2}}, message: "Missing a start tag"}}
     end
+
+    test "handle unexpected end" do
+      error = {:fatal, {:unexpected_end, {:file, :file_name_unknown}, {:line, 1}, {:col, 224}}}
+
+      result = SweetXmlHandler.handle(error, "")
+
+      assert result ==
+               {:error, %{data: {"", {:col, 224}}, message: "A tag has ended unexpectedly"}}
+    end
   end
 end

@@ -11,9 +11,13 @@ defmodule Ofx.Parser.SweetXmlHandler do
      }}
   end
 
+  def handle({:fatal, {:unexpected_end, _file, _line, col}}, xml) do
+    {:error, %{message: "A tag has ended unexpectedly", data: {xml, col}}}
+  end
+
   def handle({:fatal, {:expected_element_start_tag, _file, _line, col}}, xml) do
     {:error, %{message: "Missing a start tag", data: {xml, col}}}
   end
 
-  # {:fatal, {:unexpected_end, {:file, :file_name_unknown}, {:line, 1}, {:col, 224}}}
+  def handle(error, _xml), do: {:error, %{message: "Unknown error", data: error}}
 end
