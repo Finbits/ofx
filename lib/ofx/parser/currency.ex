@@ -1,4 +1,6 @@
 defmodule Ofx.Parser.Currency do
+  @moduledoc false
+
   alias Ofx.Parser.Error
 
   def amount_to_positive_integer(amount, currency) do
@@ -8,10 +10,12 @@ defmodule Ofx.Parser.Currency do
     |> abs()
   rescue
     _any ->
-      raise Error, %{
-        message: "Amount is invalid or currency is unknown",
-        data: {{:amount, amount}, {:currency, currency}}
-      }
+      reraise Error,
+              %{
+                message: "Amount is invalid or currency is unknown",
+                data: {{:amount, amount}, {:currency, currency}}
+              },
+              __STACKTRACE__
   end
 
   def amount_to_float(amount) do
@@ -19,7 +23,7 @@ defmodule Ofx.Parser.Currency do
 
     float
   rescue
-    _any -> raise Error, %{message: "Amount is invalid", data: amount}
+    _any -> reraise Error, %{message: "Amount is invalid", data: amount}, __STACKTRACE__
   end
 
   def amount_type(amount),

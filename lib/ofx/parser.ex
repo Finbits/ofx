@@ -3,7 +3,7 @@ defmodule Ofx.Parser do
 
   import SweetXml, only: [xpath: 2, sigil_x: 2]
 
-  alias Ofx.Parser.{Bank, Error, SweetXmlHandler, Signon}
+  alias Ofx.Parser.{Bank, Error, Signon, SweetXmlHandler}
 
   @message_list ~x"//OFX/*[contains(name(),'MSGSRS')]"l
   @message_name ~x"name()"s

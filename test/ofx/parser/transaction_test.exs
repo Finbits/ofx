@@ -52,7 +52,7 @@ defmodule Ofx.Parser.TransactionTest do
                  type: "debit",
                  currency: "BHD",
                  amount: -34.34,
-                 int_positive_amount: 34340,
+                 int_positive_amount: 34_340,
                  amount_type: :debit
                },
                %{
@@ -145,7 +145,7 @@ defmodule Ofx.Parser.TransactionTest do
                check_number: "",
                currency: "BHD",
                fit_id: "",
-               int_positive_amount: 34340,
+               int_positive_amount: 34_340,
                memo: "",
                name: "",
                posted_date: ~N[2021-01-21 07:00:00],

@@ -1,4 +1,6 @@
 defmodule Ofx.Parser.Datetime do
+  @moduledoc false
+
   import String, only: [to_integer: 1]
 
   alias Ofx.Parser.Error
@@ -14,7 +16,10 @@ defmodule Ofx.Parser.Datetime do
     |> build_naive_date_time()
     |> shift_tz_to_uct0()
   rescue
-    _any -> raise Error, %{message: "Date has invalid format or was not found", data: date_string}
+    _any ->
+      reraise Error,
+              %{message: "Date has invalid format or was not found", data: date_string},
+              __STACKTRACE__
   end
 
   defp build_naive_date_time(%{} = captures) do

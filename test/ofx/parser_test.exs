@@ -98,7 +98,7 @@ defmodule Ofx.ParserTest do
                          check_number: "",
                          currency: "USD",
                          fit_id: "4614806509201701201",
-                         int_positive_amount: 37207,
+                         int_positive_amount: 37_207,
                          memo: "#YOLO",
                          name: "BUYING ALL THE THINGS",
                          posted_date: ~N[2017-01-20 12:00:00],
@@ -124,7 +124,7 @@ defmodule Ofx.ParserTest do
                    account_id: "0000000007539546821",
                    account_type: "checking",
                    balance: %{
-                     amount: 85263.0,
+                     amount: 85_263.0,
                      amount_type: :credit,
                      date: ~N[2017-01-27 12:00:00],
                      int_positive_amount: 8_526_300

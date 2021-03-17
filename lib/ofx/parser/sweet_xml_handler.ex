@@ -1,4 +1,6 @@
 defmodule Ofx.Parser.SweetXmlHandler do
+  @moduledoc false
+
   def handle({:fatal, {{:endtag_does_not_match, tag}, _file, _line, col}}, xml) do
     {:was, found, :should_have_been, expected} = tag
 

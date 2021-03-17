@@ -75,14 +75,14 @@ defmodule Ofx.Parser.Bank do
       severity: Status.format_severity(severity)
     }
   rescue
-    error in Error -> raise error
-    _any -> raise Error, %{message: "Invalid status code", data: code}
+    error in Error -> reraise error, __STACKTRACE__
+    _any -> reraise Error, %{message: "Invalid status code", data: code}, __STACKTRACE__
   end
 
   defp format_account_type(type) do
     Map.fetch!(@account_types, type)
   rescue
-    _any -> raise Error, %{message: "Unknown account type", data: type}
+    _any -> reraise Error, %{message: "Unknown account type", data: type}, __STACKTRACE__
   end
 
   defp get(xml, expression), do: SweetXml.xpath(xml, expression)

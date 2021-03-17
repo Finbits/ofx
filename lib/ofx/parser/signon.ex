@@ -26,8 +26,8 @@ defmodule Ofx.Parser.Signon do
       financial_institution: financial_institution
     }
   rescue
-    error in Error -> raise error
-    _any -> raise Error, %{message: "Invalid SIGNON message", data: ""}
+    error in Error -> reraise error, __STACKTRACE__
+    _any -> reraise Error, %{message: "Invalid SIGNON message", data: ""}, __STACKTRACE__
   end
 
   def append_message(%{} = signon, %{} = messages),

@@ -1,4 +1,6 @@
 defmodule Ofx.Parser.Transaction do
+  @moduledoc false
+
   import SweetXml, only: [sigil_x: 2]
 
   alias Ofx.Parser.{Currency, Datetime}

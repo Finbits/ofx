@@ -1,4 +1,6 @@
 defmodule Ofx.Parser.Status do
+  @moduledoc false
+
   alias Ofx.Parser.Error
 
   @severities %{
@@ -10,6 +12,6 @@ defmodule Ofx.Parser.Status do
   def format_severity(severity) do
     Map.fetch!(@severities, severity)
   rescue
-    _any -> raise Error, %{message: "Severity is unknown", data: severity}
+    _any -> reraise Error, %{message: "Severity is unknown", data: severity}, __STACKTRACE__
   end
 end
