@@ -3,7 +3,7 @@ defmodule Ofx.Parser.BankTest do
 
   import SweetXml, only: [sigil_x: 2]
 
-  alias Ofx.Parser.Bank
+  alias Ofx.Parser.{Bank, Error}
 
   describe "format/1" do
     test "format bank message" do
@@ -96,6 +96,98 @@ defmodule Ofx.Parser.BankTest do
                  }
                }
              ]
+    end
+
+    test "raise exception for invalid staus code" do
+      bank_msg = """
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STATUS>
+      <CODE>invalid</CODE>
+      <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      <LEDGERBAL>
+      <BALAMT>6151.76</BALAMT>
+      <DTASOF>20210218100000[-03:EST]</DTASOF>
+      </LEDGERBAL>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      """
+
+      bank_example =
+        bank_msg
+        |> SweetXml.parse()
+        |> SweetXml.xpath(~x"//BANKMSGSRSV1")
+
+      assert_raise Error, "Invalid status code", fn ->
+        Bank.format(bank_example)
+      end
+    end
+
+    test "raise exception for invalid staus severity" do
+      bank_msg = """
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STATUS>
+      <CODE>0</CODE>
+      <SEVERITY>invalid</SEVERITY>
+      </STATUS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      <LEDGERBAL>
+      <BALAMT>6151.76</BALAMT>
+      <DTASOF>20210218100000[-03:EST]</DTASOF>
+      </LEDGERBAL>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      """
+
+      bank_example =
+        bank_msg
+        |> SweetXml.parse()
+        |> SweetXml.xpath(~x"//BANKMSGSRSV1")
+
+      assert_raise Error, "Severity is unknown", fn ->
+        Bank.format(bank_example)
+      end
+    end
+
+    test "raise exception for invalid balance info" do
+      bank_msg = """
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STATUS>
+      <CODE>0</CODE>
+      <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      """
+
+      bank_example =
+        bank_msg
+        |> SweetXml.parse()
+        |> SweetXml.xpath(~x"//BANKMSGSRSV1")
+
+      assert_raise Error, "Date has invalid format or was not found", fn ->
+        Bank.format(bank_example)
+      end
     end
   end
 end

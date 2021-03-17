@@ -1,7 +1,7 @@
 defmodule Ofx.Parser.CurrencyTest do
   use ExUnit.Case, async: true
 
-  alias Ofx.Parser.Currency
+  alias Ofx.Parser.{Currency, Error}
 
   describe "amount_to_positive_integer/2" do
     test "to a currence with no decimals" do
@@ -44,6 +44,18 @@ defmodule Ofx.Parser.CurrencyTest do
       assert Currency.amount_to_positive_integer(three_decimals, currency) == 500_100
       assert Currency.amount_to_positive_integer(negative, currency) == 500_100
     end
+
+    test "raise exception when amount is invalid" do
+      assert_raise Error, "Amount is invalid or currency is unknown", fn ->
+        Currency.amount_to_positive_integer("a", "BRL")
+      end
+    end
+
+    test "raise exception when currency is unknown" do
+      assert_raise Error, "Amount is invalid or currency is unknown", fn ->
+        Currency.amount_to_positive_integer("100", "reais")
+      end
+    end
   end
 
   describe "amount_type/1" do
@@ -71,6 +83,12 @@ defmodule Ofx.Parser.CurrencyTest do
       assert Currency.amount_to_float(negative_with_spaces) == -90.0
       assert Currency.amount_to_float(positive) == 90.0
       assert Currency.amount_to_float(positive_with_spaces) == 90.0
+    end
+
+    test "raise exception when amount is invalid" do
+      assert_raise Error, "Amount is invalid", fn ->
+        Currency.amount_to_float("a")
+      end
     end
   end
 end

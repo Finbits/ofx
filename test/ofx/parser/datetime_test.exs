@@ -1,7 +1,7 @@
 defmodule Ofx.Parser.DateTimeTest do
   use ExUnit.Case, async: true
 
-  alias Ofx.Parser.Datetime
+  alias Ofx.Parser.{Datetime, Error}
 
   describe "format/1" do
     test "format ofx date to naivedatetime" do
@@ -18,6 +18,24 @@ defmodule Ofx.Parser.DateTimeTest do
       assert Datetime.format(negative_tz) == ~N[2021-02-18 07:00:00]
       assert Datetime.format(negative_fractional_tz) == ~N[2021-02-18 06:30:00]
       assert Datetime.format(miliseconds_and_tz) == ~N[2017-07-27 12:37:42]
+    end
+
+    test "raise exception when given value is nil" do
+      assert_raise Error, "Date has invalid format or was not found", fn ->
+        Datetime.format(nil)
+      end
+    end
+
+    test "raise exception when given value is an empty string" do
+      assert_raise Error, "Date has invalid format or was not found", fn ->
+        Datetime.format("")
+      end
+    end
+
+    test "raise exception when date format is invalid" do
+      assert_raise Error, "Date has invalid format or was not found", fn ->
+        Datetime.format("2019-01-01 00:00:00")
+      end
     end
   end
 end

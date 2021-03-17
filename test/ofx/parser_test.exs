@@ -2,6 +2,7 @@ defmodule Ofx.ParserTest do
   use ExUnit.Case, async: true
 
   alias Ofx.Parser
+  alias Ofx.Parser.Error
 
   describe "parse/1" do
     test "parse a statement account ofx" do
@@ -178,6 +179,142 @@ defmodule Ofx.ParserTest do
                status_message: "",
                status_severity: :info
              }
+    end
+
+    test "ofx with status error" do
+      ofx_raw = File.read!("test/support/fixtures/status_error.ofx")
+
+      result = Parser.parse(ofx_raw)
+
+      assert result ==
+               {:ok,
+                %{
+                  signon: %{
+                    financial_institution: "",
+                    language: "ENG",
+                    status_code: 2000,
+                    status_message:
+                      "We were unable to process your request. Please try again later.",
+                    status_severity: :error
+                  }
+                }}
+    end
+
+    test "error for broken ofx" do
+      ofx_raw = File.read!("test/support/fixtures/broken.ofx")
+
+      result = Parser.parse(ofx_raw)
+
+      assert {:error,
+              %{
+                data: {text, {:col, 145}},
+                message: "Missing tag end. Expected: OFX. Found: SIGNONMSGSRSV1."
+              }} = result
+
+      assert is_binary(text)
+    end
+
+    test "return error for invalid format" do
+      ofx_data = """
+      <OFX>
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STATUS>
+      <CODE>0</CODE>
+      <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      </OFX>
+      """
+
+      result = Parser.parse(ofx_data)
+
+      assert result == {:error, %{data: "", message: "Date has invalid format or was not found"}}
+    end
+  end
+
+  describe "parse!/1" do
+    test "parse a statement account ofx" do
+      ofx_raw = File.read!("test/support/fixtures/sample.ofx")
+
+      result = Parser.parse!(ofx_raw)
+
+      assert result == %{
+               signon: %{
+                 financial_institution: "",
+                 language: "POR",
+                 status_code: 0,
+                 status_message: "",
+                 status_severity: :info
+               },
+               bank: [
+                 %{
+                   account_id: "9352226196",
+                   account_type: "checking",
+                   balance: %{
+                     amount: 6151.76,
+                     date: ~N[2021-02-18 07:00:00],
+                     int_positive_amount: 615_176,
+                     amount_type: :credit
+                   },
+                   currency: "BRL",
+                   description: "",
+                   request_id: "1001",
+                   routing_number: "0341",
+                   status: %{code: 0, severity: :info},
+                   transactions: %{
+                     end_date: ~N[2021-02-26 07:00:00],
+                     list: [
+                       %{
+                         amount: -44.99,
+                         check_number: "20210126002",
+                         currency: "BRL",
+                         fit_id: "20210126002",
+                         int_positive_amount: 4499,
+                         memo: "DA  VIVO-SP 04077306573",
+                         name: "",
+                         posted_date: ~N[2021-01-26 07:00:00],
+                         amount_type: :debit,
+                         type: "debit"
+                       }
+                     ],
+                     start_date: ~N[2021-01-21 07:00:00]
+                   }
+                 }
+               ]
+             }
+    end
+
+    test "raise exception for invalid format" do
+      ofx_data = """
+      <OFX>
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STATUS>
+      <CODE>0</CODE>
+      <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      </OFX>
+      """
+
+      assert_raise Error, "Date has invalid format or was not found", fn ->
+        Parser.parse!(ofx_data)
+      end
     end
   end
 end

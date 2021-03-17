@@ -3,7 +3,7 @@ defmodule Ofx.Parser.Signon do
 
   import SweetXml, only: [sigil_x: 2]
 
-  alias Ofx.Parser.Status
+  alias Ofx.Parser.{Error, Status}
 
   @status ~x[SONRS/STATUS/CODE/text()]s
   @severity ~x[SONRS/STATUS/SEVERITY/text()]s
@@ -25,6 +25,9 @@ defmodule Ofx.Parser.Signon do
       language: language,
       financial_institution: financial_institution
     }
+  rescue
+    error in Error -> raise error
+    _any -> raise Error, %{message: "Invalid SIGNON message", data: ""}
   end
 
   def append_message(%{} = signon, %{} = messages),

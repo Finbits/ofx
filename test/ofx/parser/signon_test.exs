@@ -1,7 +1,7 @@
 defmodule Ofx.Parser.SignonTest do
   use ExUnit.Case, async: true
 
-  alias Ofx.Parser.Signon
+  alias Ofx.Parser.{Error, Signon}
 
   describe "format/1" do
     test "format signon message" do
@@ -60,6 +60,44 @@ defmodule Ofx.Parser.SignonTest do
                status_severity: :info,
                status_message: ""
              }
+    end
+
+    test "raise error for invalid status code" do
+      signon_example = """
+      <SIGNONMSGSRSV1>
+      <SONRS>
+      <STATUS>
+      <CODE>invalid</CODE>
+      <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      </SONRS>
+      </SIGNONMSGSRSV1>
+      """
+
+      xml_data = SweetXml.parse(signon_example)
+
+      assert_raise Error, "Invalid SIGNON message", fn ->
+        Signon.format(xml_data)
+      end
+    end
+
+    test "raise error for invalid status severity" do
+      signon_example = """
+      <SIGNONMSGSRSV1>
+      <SONRS>
+      <STATUS>
+      <CODE>0</CODE>
+      <SEVERITY>invalid</SEVERITY>
+      </STATUS>
+      </SONRS>
+      </SIGNONMSGSRSV1>
+      """
+
+      xml_data = SweetXml.parse(signon_example)
+
+      assert_raise Error, "Severity is unknown", fn ->
+        Signon.format(xml_data)
+      end
     end
   end
 

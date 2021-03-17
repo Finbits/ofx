@@ -3,17 +3,31 @@ defmodule Ofx.Parser do
 
   import SweetXml, only: [xpath: 2, sigil_x: 2]
 
-  alias Ofx.Parser.{Bank, Signon}
+  alias Ofx.Parser.{Bank, Error, SweetXmlHandler, Signon}
 
   @message_list ~x"//OFX/*[contains(name(),'MSGSRS')]"l
   @message_name ~x"name()"s
 
   def parse(raw_data) when is_binary(raw_data) do
-    raw_data
-    |> normalize_to_xml()
-    |> SweetXml.parse()
-    |> format_messages()
-    |> (fn response -> {:ok, response} end).()
+    xml_data = normalize_to_xml(raw_data)
+
+    try do
+      xml_data
+      |> SweetXml.parse()
+      |> format_messages()
+      |> (&{:ok, &1}).()
+    rescue
+      error in Error -> {:error, Map.take(error, [:message, :data])}
+    catch
+      :exit, error -> SweetXmlHandler.handle(error, xml_data)
+    end
+  end
+
+  def parse!(raw_data) when is_binary(raw_data) do
+    case parse(raw_data) do
+      {:ok, result} -> result
+      {:error, error} -> raise Error, error
+    end
   end
 
   defp normalize_to_xml(raw_data) do

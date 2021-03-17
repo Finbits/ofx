@@ -3,7 +3,7 @@ defmodule Ofx.Parser.Bank do
 
   import SweetXml, only: [sigil_x: 2]
 
-  alias Ofx.Parser.{Currency, Datetime, Status, Transaction}
+  alias Ofx.Parser.{Currency, Datetime, Error, Status, Transaction}
 
   @statements ~x"./STMTTRNRS"l
   @account_id ~x"//ACCTID/text()"s
@@ -51,10 +51,7 @@ defmodule Ofx.Parser.Bank do
       description: get(xml, @description),
       currency: currency,
       balance: build_balance(balance, balance_date, currency),
-      status: %{
-        code: xml |> get(@status_code) |> String.to_integer(),
-        severity: xml |> get(@status_severity) |> Status.format_severity()
-      },
+      status: build_status(get(xml, @status_code), get(xml, @status_severity)),
       transactions: %{
         start_date: get_and_format_date(xml, @start_date),
         end_date: get_and_format_date(xml, @end_date),
@@ -72,7 +69,21 @@ defmodule Ofx.Parser.Bank do
     }
   end
 
-  defp format_account_type(type), do: @account_types[type]
+  defp build_status(code, severity) do
+    %{
+      code: String.to_integer(code),
+      severity: Status.format_severity(severity)
+    }
+  rescue
+    error in Error -> raise error
+    _any -> raise Error, %{message: "Invalid status code", data: code}
+  end
+
+  defp format_account_type(type) do
+    Map.fetch!(@account_types, type)
+  rescue
+    _any -> raise Error, %{message: "Unknown account type", data: type}
+  end
 
   defp get(xml, expression), do: SweetXml.xpath(xml, expression)
 

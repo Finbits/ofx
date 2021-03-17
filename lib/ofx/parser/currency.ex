@@ -1,21 +1,31 @@
 defmodule Ofx.Parser.Currency do
+  alias Ofx.Parser.Error
+
   def amount_to_positive_integer(amount, currency) do
     amount
-    |> Float.parse()
+    |> amount_to_float()
     |> remove_decimal(currency)
     |> abs()
+  rescue
+    _any ->
+      raise Error, %{
+        message: "Amount is invalid or currency is unknown",
+        data: {{:amount, amount}, {:currency, currency}}
+      }
   end
 
   def amount_to_float(amount) do
     {float, _rest} = amount |> String.replace(~r/\s/, "") |> Float.parse()
 
     float
+  rescue
+    _any -> raise Error, %{message: "Amount is invalid", data: amount}
   end
 
   def amount_type(amount),
     do: if(Regex.match?(~r/\s*-[\s\d]+/, amount), do: :debit, else: :credit)
 
-  defp remove_decimal({float, _rest}, currency),
+  defp remove_decimal(float, currency),
     do: round(float * :math.pow(10, decimals_for(currency)))
 
   defp decimals_for(currency) do

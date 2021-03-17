@@ -1,6 +1,8 @@
 defmodule Ofx.Parser.Datetime do
   import String, only: [to_integer: 1]
 
+  alias Ofx.Parser.Error
+
   @regex ~r/^(?<y>\d{4})(?<M>\d{2})(?<d>\d{2})(?<h>\d{2})(?<m>\d{2})(?<s>\d{2})(\.\d{3})?.*?(\[(?<signal>[-+]?)(?<th>\d{1,2})\.?(?<tm>\d{1,2})?)?/
 
   @seconds_in_an_hour 3600
@@ -11,6 +13,8 @@ defmodule Ofx.Parser.Datetime do
     |> Regex.named_captures(date_string)
     |> build_naive_date_time()
     |> shift_tz_to_uct0()
+  rescue
+    _any -> raise Error, %{message: "Date has invalid format or was not found", data: date_string}
   end
 
   defp build_naive_date_time(%{} = captures) do

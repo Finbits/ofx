@@ -120,5 +120,37 @@ defmodule Ofx.Parser.TransactionTest do
                }
              ]
     end
+
+    test "incomplete transaction" do
+      currency = "BRL"
+
+      transaction_txt = """
+      <STMTTRN>
+      <DTPOSTED>20210121100000[-03:EST]</DTPOSTED>
+      <TRNAMT>-34.34</TRNAMT>
+      <CURRENCY>BHD</CURRENCY>
+      </STMTTRN>
+      """
+
+      transactions_xml =
+        transaction_txt
+        |> SweetXml.parse()
+        |> SweetXml.xpath(~x"//STMTTRN")
+
+      result = Transaction.format(transactions_xml, currency)
+
+      assert result == %{
+               amount: -34.34,
+               amount_type: :debit,
+               check_number: "",
+               currency: "BHD",
+               fit_id: "",
+               int_positive_amount: 34340,
+               memo: "",
+               name: "",
+               posted_date: ~N[2021-01-21 07:00:00],
+               type: nil
+             }
+    end
   end
 end
