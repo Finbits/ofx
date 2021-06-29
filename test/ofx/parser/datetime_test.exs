@@ -11,6 +11,7 @@ defmodule Ofx.Parser.DateTimeTest do
       negative_tz = "20210218100000[-03:EST]"
       negative_fractional_tz = "20210218100000[-03.30:EST]"
       miliseconds_and_tz = "20170727163742.733[-4:EDT]"
+      date_without_time = "20210629"
 
       assert Datetime.format(without_tz) == ~N[2015-07-30 12:00:00]
       assert Datetime.format(positive_tz) == ~N[2021-02-18 13:00:00]
@@ -18,6 +19,7 @@ defmodule Ofx.Parser.DateTimeTest do
       assert Datetime.format(negative_tz) == ~N[2021-02-18 07:00:00]
       assert Datetime.format(negative_fractional_tz) == ~N[2021-02-18 06:30:00]
       assert Datetime.format(miliseconds_and_tz) == ~N[2017-07-27 12:37:42]
+      assert Datetime.format(date_without_time) == ~N[2021-06-29 00:00:00]
     end
 
     test "raise exception when given value is nil" do

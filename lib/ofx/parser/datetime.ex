@@ -5,7 +5,7 @@ defmodule Ofx.Parser.Datetime do
 
   alias Ofx.Parser.Error
 
-  @regex ~r/^(?<y>\d{4})(?<M>\d{2})(?<d>\d{2})(?<h>\d{2})(?<m>\d{2})(?<s>\d{2})(\.\d{3})?.*?(\[(?<signal>[-+]?)(?<th>\d{1,2})\.?(?<tm>\d{1,2})?)?/
+  @regex ~r'^(?<y>\d{4})(?<M>\d{2})(?<d>\d{2})(?<h>\d{2})?(?<m>\d{2})?(?<s>\d{2})?(\.\d{3})?.*?(\[(?<signal>[-+]?)(?<th>\d{1,2})\.?(?<tm>\d{1,2})?)?'
 
   @seconds_in_an_hour 3600
   @seconds_in_a_minute 60
@@ -25,15 +25,25 @@ defmodule Ofx.Parser.Datetime do
   defp build_naive_date_time(%{} = captures) do
     naivedatetime =
       NaiveDateTime.new!(
-        to_integer(captures["y"]),
-        to_integer(captures["M"]),
-        to_integer(captures["d"]),
-        to_integer(captures["h"]),
-        to_integer(captures["m"]),
-        to_integer(captures["s"])
+        get_as_int(captures, "y"),
+        get_as_int(captures, "M"),
+        get_as_int(captures, "d"),
+        get_as_int(captures, "h", 0),
+        get_as_int(captures, "m", 0),
+        get_as_int(captures, "s", 0)
       )
 
     {captures, naivedatetime}
+  end
+
+  defp get_as_int(map, key, default \\ nil) do
+    value = Map.get(map, key)
+
+    if value == "" or value == nil do
+      default
+    else
+      to_integer(value)
+    end
   end
 
   defp shift_tz_to_uct0({%{"th" => ""}, naivedatetime}), do: naivedatetime
