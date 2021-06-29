@@ -292,6 +292,117 @@ defmodule Ofx.ParserTest do
              }
     end
 
+    test "parse a latin1 encoded file" do
+      ofx_raw = File.read!("test/support/fixtures/latin_encoding.ofx")
+
+      assert {:ok, result} = Parser.parse(ofx_raw)
+
+      assert result == %{
+               bank: [
+                 %{
+                   account_id: "1198276",
+                   account_type: "checking",
+                   balance: %{
+                     amount: 1.0,
+                     amount_type: :credit,
+                     date: ~N[2021-06-29 00:00:00],
+                     int_positive_amount: 100
+                   },
+                   currency: "BRL",
+                   description: "",
+                   request_id: "1001",
+                   routing_number: "077",
+                   status: %{code: 0, severity: :info},
+                   transactions: %{
+                     end_date: ~N[2021-06-29 00:00:00],
+                     list: [
+                       %{
+                         amount: 159.9,
+                         amount_type: :credit,
+                         check_number: "077",
+                         currency: "BRL",
+                         fit_id: "12/04/2021077",
+                         int_positive_amount: 15990,
+                         memo: "PAGAMENTO CASHBACK 9832-01",
+                         name: "",
+                         posted_date: ~N[2021-04-12 00:00:00],
+                         type: "credit"
+                       },
+                       %{
+                         amount: -159.9,
+                         amount_type: :debit,
+                         check_number: "077",
+                         currency: "BRL",
+                         fit_id: "05/05/2021077",
+                         int_positive_amount: 15990,
+                         memo: "PAGAMENTO FATURA INTER - Pagamento Fatura Cartão Inter",
+                         name: "",
+                         posted_date: ~N[2021-05-05 00:00:00],
+                         type: "electronic_payment"
+                       },
+                       %{
+                         amount: 0.39,
+                         amount_type: :credit,
+                         check_number: "077",
+                         currency: "BRL",
+                         fit_id: "06/05/2021077",
+                         int_positive_amount: 39,
+                         memo: "CASHBACK CARTAO DE CREDITO -",
+                         name: "",
+                         posted_date: ~N[2021-05-06 00:00:00],
+                         type: "credit"
+                       },
+                       %{
+                         amount: 220.0,
+                         amount_type: :credit,
+                         check_number: "077",
+                         currency: "BRL",
+                         fit_id: "07/06/2021077",
+                         int_positive_amount: 22000,
+                         memo: "PIX RECEBIDO - Cp :98127- Jonny",
+                         name: "",
+                         posted_date: ~N[2021-06-07 00:00:00],
+                         type: "credit"
+                       },
+                       %{
+                         amount: -219.9,
+                         amount_type: :debit,
+                         check_number: "077",
+                         currency: "BRL",
+                         fit_id: "07/06/2021077",
+                         int_positive_amount: 21990,
+                         memo: "PAGAMENTO FATURA INTER - Débito Automático Fatura Cartão Inter",
+                         name: "",
+                         posted_date: ~N[2021-06-07 00:00:00],
+                         type: "electronic_payment"
+                       },
+                       %{
+                         amount: 0.54,
+                         amount_type: :credit,
+                         check_number: "077",
+                         currency: "BRL",
+                         fit_id: "09/06/2021077",
+                         int_positive_amount: 54,
+                         memo: "CASHBACK CARTAO DE CREDITO -",
+                         name: "",
+                         posted_date: ~N[2021-06-09 00:00:00],
+                         type: "credit"
+                       }
+                     ],
+                     start_date: ~N[2021-03-31 00:00:00]
+                   }
+                 }
+               ],
+               signon: %{
+                 financial_institution: "Banco Inter S/A",
+                 language: "POR",
+                 status_code: 0,
+                 status_message: "",
+                 status_severity: :info
+               }
+             }
+    end
+
     test "raise exception for invalid format" do
       ofx_data = """
       <OFX>

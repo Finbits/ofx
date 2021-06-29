@@ -9,18 +9,10 @@ defmodule Ofx.Parser do
   @message_name ~x"name()"s
 
   def parse(raw_data) when is_binary(raw_data) do
-    xml_data = normalize_to_xml(raw_data)
-
-    try do
-      xml_data
-      |> SweetXml.parse()
-      |> format_messages()
-      |> (&{:ok, &1}).()
-    rescue
-      error in Error -> {:error, Map.take(error, [:message, :data])}
-    catch
-      :exit, error -> SweetXmlHandler.handle(error, xml_data)
-    end
+    raw_data
+    |> fix_encoding()
+    |> normalize_to_xml()
+    |> apply_parsing()
   end
 
   def parse!(raw_data) when is_binary(raw_data) do
@@ -30,13 +22,39 @@ defmodule Ofx.Parser do
     end
   end
 
-  defp normalize_to_xml(raw_data) do
+  defp fix_encoding(raw_data) do
+    utf8_data = :unicode.characters_to_binary(raw_data, :latin1)
+
+    if(String.valid?(utf8_data)) do
+      {:ok, utf8_data}
+    else
+      {:error, "Unknow encoding"}
+    end
+  end
+
+  defp apply_parsing({:ok, xml_data}) do
+    xml_data
+    |> SweetXml.parse()
+    |> format_messages()
+    |> (&{:ok, &1}).()
+  rescue
+    error in Error -> {:error, Map.take(error, [:message, :data])}
+  catch
+    :exit, error -> SweetXmlHandler.handle(error, xml_data)
+  end
+
+  defp apply_parsing({:error, _msg} = err), do: err
+
+  defp normalize_to_xml({:ok, raw_data}) do
     raw_data
     |> remove_file_headers()
     |> remove_white_spaces()
     |> write_close_tags()
     |> remove_special_chars()
+    |> (fn xml -> {:ok, xml} end).()
   end
+
+  defp normalize_to_xml({:error, _msg} = err), do: err
 
   defp format_messages(xml_data) do
     xml_data
