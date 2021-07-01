@@ -8,7 +8,7 @@ defmodule Ofx.Parser.BankTest do
   describe "format/1" do
     test "format bank message" do
       bank_example =
-        "test/support/fixtures/bankmsgsrsv1.example"
+        "test/support/fixtures/bankmsgsrsv1.ofx"
         |> File.read!()
         |> SweetXml.parse()
         |> SweetXml.xpath(~x"//OFX/BANKMSGSRSV1")
@@ -55,7 +55,7 @@ defmodule Ofx.Parser.BankTest do
 
     test "without transactions date" do
       bank_example =
-        "test/support/fixtures/bankmsgsrsv1_with_out_transactions_date.example"
+        "test/support/fixtures/bankmsgsrsv1_with_out_transactions_date.ofx"
         |> File.read!()
         |> SweetXml.parse()
         |> SweetXml.xpath(~x"//OFX/BANKMSGSRSV1")

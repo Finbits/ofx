@@ -10,7 +10,7 @@ defmodule Ofx.Parser.TransactionTest do
       currency = "BRL"
 
       transaction_example =
-        "test/support/fixtures/bankmsgsrsv1.example"
+        "test/support/fixtures/bankmsgsrsv1.ofx"
         |> File.read!()
         |> SweetXml.parse()
         |> SweetXml.xpath(~x"//OFX/BANKMSGSRSV1/STMTTRNRS/STMTRS/BANKTRANLIST/STMTTRN")
@@ -35,7 +35,7 @@ defmodule Ofx.Parser.TransactionTest do
       currency = "BRL"
 
       transactions_example =
-        "test/support/fixtures/transaction_with_currency.example"
+        "test/support/fixtures/transaction_with_currency.ofx"
         |> File.read!()
         |> SweetXml.parse()
         |> SweetXml.xpath(~x"//OFX/STMTTRN"l)
@@ -74,7 +74,7 @@ defmodule Ofx.Parser.TransactionTest do
       currency = "BRL"
 
       transactions_example =
-        "test/support/fixtures/transactions_with_different_types.example"
+        "test/support/fixtures/transactions_with_different_types.ofx"
         |> File.read!()
         |> SweetXml.parse()
         |> SweetXml.xpath(~x"//OFX/STMTTRN"l)
