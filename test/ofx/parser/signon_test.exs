@@ -31,7 +31,8 @@ defmodule Ofx.Parser.SignonTest do
                language: "POR",
                status_code: 0,
                status_severity: :info,
-               status_message: "SUCCESS"
+               status_message: "SUCCESS",
+               export_date: ~N[2021-02-18 07:00:00]
              }
     end
 
@@ -58,7 +59,8 @@ defmodule Ofx.Parser.SignonTest do
                language: "POR",
                status_code: 0,
                status_severity: :info,
-               status_message: ""
+               status_message: "",
+               export_date: ~N[2021-02-18 07:00:00]
              }
     end
 
@@ -98,6 +100,34 @@ defmodule Ofx.Parser.SignonTest do
       assert_raise Error, "Severity is unknown", fn ->
         Signon.format(xml_data)
       end
+    end
+
+    test "return export_date as 'nil' when server date is invalid" do
+      signon_example = """
+      <SIGNONMSGSRSV1>
+      <SONRS>
+      <STATUS>
+      <CODE>0</CODE>
+      <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <DTSERVER>00000000000000</DTSERVER>
+      <LANGUAGE>POR</LANGUAGE>
+      </SONRS>
+      </SIGNONMSGSRSV1>
+      """
+
+      xml_data = SweetXml.parse(signon_example)
+
+      result = Signon.format(xml_data)
+
+      assert result == %{
+               export_date: nil,
+               financial_institution: "",
+               language: "POR",
+               status_code: 0,
+               status_message: "",
+               status_severity: :info
+             }
     end
   end
 

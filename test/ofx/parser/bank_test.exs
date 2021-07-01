@@ -47,8 +47,7 @@ defmodule Ofx.Parser.BankTest do
                        currency: "BRL"
                      }
                    ]
-                 },
-                 export_date: nil
+                 }
                }
              ]
     end
@@ -94,8 +93,7 @@ defmodule Ofx.Parser.BankTest do
                        type: "check"
                      }
                    ]
-                 },
-                 export_date: nil
+                 }
                }
              ]
     end
@@ -242,8 +240,7 @@ defmodule Ofx.Parser.BankTest do
                    end_date: nil,
                    list: [],
                    start_date: nil
-                 },
-                 export_date: nil
+                 }
                }
              ]
     end

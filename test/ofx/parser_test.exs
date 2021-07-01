@@ -16,7 +16,8 @@ defmodule Ofx.ParserTest do
                  language: "POR",
                  status_code: 0,
                  status_message: "",
-                 status_severity: :info
+                 status_severity: :info,
+                 export_date: ~N[2021-02-18 07:00:00]
                },
                bank: [
                  %{
@@ -159,7 +160,8 @@ defmodule Ofx.ParserTest do
                  language: "ENG",
                  status_code: 0,
                  status_message: "",
-                 status_severity: :info
+                 status_severity: :info,
+                 export_date: ~N[2017-01-27 06:01:31]
                }
              }
     end
@@ -177,7 +179,8 @@ defmodule Ofx.ParserTest do
                language: "ENG",
                status_code: 0,
                status_message: "",
-               status_severity: :info
+               status_severity: :info,
+               export_date: ~N[2017-01-27 06:01:31]
              }
     end
 
@@ -195,7 +198,8 @@ defmodule Ofx.ParserTest do
                     status_code: 2000,
                     status_message:
                       "We were unable to process your request. Please try again later.",
-                    status_severity: :error
+                    status_severity: :error,
+                    export_date: ~N[2018-10-07 18:25:26]
                   }
                 }}
     end
@@ -252,7 +256,8 @@ defmodule Ofx.ParserTest do
                  language: "POR",
                  status_code: 0,
                  status_message: "",
-                 status_severity: :info
+                 status_severity: :info,
+                 export_date: ~N[2021-02-18 07:00:00]
                },
                bank: [
                  %{
@@ -398,7 +403,8 @@ defmodule Ofx.ParserTest do
                  language: "POR",
                  status_code: 0,
                  status_message: "",
-                 status_severity: :info
+                 status_severity: :info,
+                 export_date: ~N[2021-06-29 00:00:00]
                }
              }
     end

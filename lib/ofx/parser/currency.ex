@@ -35,6 +35,8 @@ defmodule Ofx.Parser.Currency do
   defp remove_decimal(float, currency),
     do: round(float * :math.pow(10, decimals_for(currency)))
 
+  defp decimals_for(""), do: 2
+
   defp decimals_for(currency) do
     currency_decimails = %{
       "AED" => 2,
