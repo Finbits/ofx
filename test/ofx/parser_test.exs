@@ -236,7 +236,7 @@ defmodule Ofx.ParserTest do
 
       result = Parser.parse(ofx_data)
 
-      assert result == {:error, %{data: "", message: "Date has invalid format or was not found"}}
+      assert result == {:error, %{data: "", message: "Amount is invalid or was not found"}}
     end
   end
 
@@ -423,7 +423,7 @@ defmodule Ofx.ParserTest do
       </OFX>
       """
 
-      assert_raise Error, "Date has invalid format or was not found", fn ->
+      assert_raise Error, "Amount is invalid or was not found", fn ->
         Parser.parse!(ofx_data)
       end
     end

@@ -86,7 +86,7 @@ defmodule Ofx.Parser.CurrencyTest do
     end
 
     test "raise exception when amount is invalid" do
-      assert_raise Error, "Amount is invalid", fn ->
+      assert_raise Error, "Amount is invalid or was not found", fn ->
         Currency.amount_to_float("a")
       end
     end

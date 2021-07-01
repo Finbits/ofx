@@ -23,7 +23,10 @@ defmodule Ofx.Parser.Currency do
 
     float
   rescue
-    _any -> reraise Error, %{message: "Amount is invalid", data: amount}, __STACKTRACE__
+    _any ->
+      reraise Error,
+              %{message: "Amount is invalid or was not found", data: amount},
+              __STACKTRACE__
   end
 
   def amount_type(amount),

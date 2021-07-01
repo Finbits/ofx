@@ -47,7 +47,8 @@ defmodule Ofx.Parser.BankTest do
                        currency: "BRL"
                      }
                    ]
-                 }
+                 },
+                 export_date: nil
                }
              ]
     end
@@ -93,7 +94,8 @@ defmodule Ofx.Parser.BankTest do
                        type: "check"
                      }
                    ]
-                 }
+                 },
+                 export_date: nil
                }
              ]
     end
@@ -162,7 +164,7 @@ defmodule Ofx.Parser.BankTest do
       end
     end
 
-    test "raise exception for invalid balance info" do
+    test "raise exception for invalid amount" do
       bank_msg = """
       <BANKMSGSRSV1>
       <STMTTRNRS>
@@ -185,7 +187,7 @@ defmodule Ofx.Parser.BankTest do
         |> SweetXml.parse()
         |> SweetXml.xpath(~x"//BANKMSGSRSV1")
 
-      assert_raise Error, "Date has invalid format or was not found", fn ->
+      assert_raise Error, "Amount is invalid or was not found", fn ->
         Bank.format(bank_example)
       end
     end
@@ -240,7 +242,8 @@ defmodule Ofx.Parser.BankTest do
                    end_date: nil,
                    list: [],
                    start_date: nil
-                 }
+                 },
+                 export_date: nil
                }
              ]
     end
