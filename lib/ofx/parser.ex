@@ -23,12 +23,16 @@ defmodule Ofx.Parser do
   end
 
   defp fix_encoding(raw_data) do
-    utf8_data = :unicode.characters_to_binary(raw_data, :latin1)
-
-    if(String.valid?(utf8_data)) do
-      {:ok, utf8_data}
+    if String.valid?(raw_data) do
+      {:ok, raw_data}
     else
-      {:error, "Unknow encoding"}
+      utf8_data = :unicode.characters_to_binary(raw_data, :latin1)
+
+      if String.valid?(utf8_data) do
+        {:ok, utf8_data}
+      else
+        {:error, "Unknow encoding"}
+      end
     end
   end
 
