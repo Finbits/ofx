@@ -4,7 +4,7 @@ defmodule Ofx.Parser.CurrencyTest do
   alias Ofx.Parser.{Currency, Error}
 
   describe "amount_to_positive_integer/2" do
-    test "to a currence with no decimals" do
+    test "convert successfully when there is no decimals" do
       currency = "CVE"
       without_decimal = "500"
       one_decimal = "500.0"
@@ -17,7 +17,7 @@ defmodule Ofx.Parser.CurrencyTest do
       assert Currency.amount_to_positive_integer(negative, currency) == 500
     end
 
-    test "to a currence with 2 decimals" do
+    test "convert successfully when there is 2 decimals" do
       currency = "BRL"
       without_decimal = "500"
       one_decimal = "500.1"
@@ -30,7 +30,7 @@ defmodule Ofx.Parser.CurrencyTest do
       assert Currency.amount_to_positive_integer(negative, currency) == 50_010
     end
 
-    test "to a currence with 3 decimals" do
+    test "convert successfully when there is 3 decimals" do
       currency = "BHD"
       without_decimal = "500"
       one_decimal = "500.1"
@@ -45,15 +45,28 @@ defmodule Ofx.Parser.CurrencyTest do
       assert Currency.amount_to_positive_integer(negative, currency) == 500_100
     end
 
-    test "raise exception when amount is invalid" do
+    test "convert considering 2 decimals as default when currency is empty" do
+      currency = "CVE"
+      without_decimal = "500"
+      one_decimal = "500.0"
+      two_decimals = "500.00"
+      negative = "-500.00"
+
+      assert Currency.amount_to_positive_integer(without_decimal, currency) == 500
+      assert Currency.amount_to_positive_integer(one_decimal, currency) == 500
+      assert Currency.amount_to_positive_integer(two_decimals, currency) == 500
+      assert Currency.amount_to_positive_integer(negative, currency) == 500
+    end
+
+    test "raise exception when currency is invalid" do
       assert_raise Error, "Amount is invalid or currency is unknown", fn ->
-        Currency.amount_to_positive_integer("a", "BRL")
+        Currency.amount_to_positive_integer("100", "reais")
       end
     end
 
-    test "raise exception when currency is unknown" do
+    test "raise exception when amount is invalid" do
       assert_raise Error, "Amount is invalid or currency is unknown", fn ->
-        Currency.amount_to_positive_integer("100", "reais")
+        Currency.amount_to_positive_integer("a", "BRL")
       end
     end
   end
@@ -86,7 +99,7 @@ defmodule Ofx.Parser.CurrencyTest do
     end
 
     test "raise exception when amount is invalid" do
-      assert_raise Error, "Amount is invalid", fn ->
+      assert_raise Error, "Amount is invalid or was not found", fn ->
         Currency.amount_to_float("a")
       end
     end

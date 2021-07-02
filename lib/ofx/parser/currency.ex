@@ -23,7 +23,10 @@ defmodule Ofx.Parser.Currency do
 
     float
   rescue
-    _any -> reraise Error, %{message: "Amount is invalid", data: amount}, __STACKTRACE__
+    _any ->
+      reraise Error,
+              %{message: "Amount is invalid or was not found", data: amount},
+              __STACKTRACE__
   end
 
   def amount_type(amount),
@@ -31,6 +34,8 @@ defmodule Ofx.Parser.Currency do
 
   defp remove_decimal(float, currency),
     do: round(float * :math.pow(10, decimals_for(currency)))
+
+  defp decimals_for(""), do: 2
 
   defp decimals_for(currency) do
     currency_decimails = %{

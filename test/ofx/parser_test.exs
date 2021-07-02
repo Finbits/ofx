@@ -16,7 +16,8 @@ defmodule Ofx.ParserTest do
                  language: "POR",
                  status_code: 0,
                  status_message: "",
-                 status_severity: :info
+                 status_severity: :info,
+                 export_date: ~N[2021-02-18 07:00:00]
                },
                bank: [
                  %{
@@ -159,7 +160,8 @@ defmodule Ofx.ParserTest do
                  language: "ENG",
                  status_code: 0,
                  status_message: "",
-                 status_severity: :info
+                 status_severity: :info,
+                 export_date: ~N[2017-01-27 06:01:31]
                }
              }
     end
@@ -177,7 +179,8 @@ defmodule Ofx.ParserTest do
                language: "ENG",
                status_code: 0,
                status_message: "",
-               status_severity: :info
+               status_severity: :info,
+               export_date: ~N[2017-01-27 06:01:31]
              }
     end
 
@@ -195,7 +198,8 @@ defmodule Ofx.ParserTest do
                     status_code: 2000,
                     status_message:
                       "We were unable to process your request. Please try again later.",
-                    status_severity: :error
+                    status_severity: :error,
+                    export_date: ~N[2018-10-07 18:25:26]
                   }
                 }}
     end
@@ -236,7 +240,7 @@ defmodule Ofx.ParserTest do
 
       result = Parser.parse(ofx_data)
 
-      assert result == {:error, %{data: "", message: "Date has invalid format or was not found"}}
+      assert result == {:error, %{data: "", message: "Amount is invalid or was not found"}}
     end
   end
 
@@ -252,7 +256,8 @@ defmodule Ofx.ParserTest do
                  language: "POR",
                  status_code: 0,
                  status_message: "",
-                 status_severity: :info
+                 status_severity: :info,
+                 export_date: ~N[2021-02-18 07:00:00]
                },
                bank: [
                  %{
@@ -292,7 +297,7 @@ defmodule Ofx.ParserTest do
              }
     end
 
-    test "parse a latin1 encoded file" do
+    test "parse latin1 encoded files" do
       ofx_raw = File.read!("test/support/fixtures/latin_encoding.ofx")
 
       assert {:ok, result} = Parser.parse(ofx_raw)
@@ -398,6 +403,95 @@ defmodule Ofx.ParserTest do
                  language: "POR",
                  status_code: 0,
                  status_message: "",
+                 status_severity: :info,
+                 export_date: ~N[2021-06-29 00:00:00]
+               }
+             }
+    end
+
+    test "parse UTF-8 encoded files" do
+      ofx_raw = File.read!("test/support/fixtures/utf8_encoding.ofx")
+
+      assert {:ok, result} = Parser.parse(ofx_raw)
+
+      assert result == %{
+               bank: [
+                 %{
+                   account_id: "1234567",
+                   account_type: "checking",
+                   balance: %{
+                     amount: 1.0,
+                     amount_type: :credit,
+                     date: nil,
+                     int_positive_amount: 100
+                   },
+                   currency: "",
+                   description: "",
+                   request_id: "1001",
+                   routing_number: "218",
+                   status: %{code: 0, severity: :info},
+                   transactions: %{
+                     end_date: ~N[2021-06-30 00:00:00],
+                     list: [
+                       %{
+                         amount: 1.0,
+                         amount_type: :credit,
+                         check_number: "0",
+                         currency: "",
+                         fit_id: "b4b21a25-38e5-40b6-9b40-b5a92b8df1e2",
+                         int_positive_amount: 100,
+                         memo: "Crédito Pix Manual",
+                         name: "",
+                         posted_date: ~N[2021-06-30 00:00:00],
+                         type: "credit"
+                       },
+                       %{
+                         amount: -0.5,
+                         amount_type: :debit,
+                         check_number: "0",
+                         currency: "",
+                         fit_id: "1b08f8b7-6052-4802-ad69-b4db2480c19d",
+                         int_positive_amount: 50,
+                         memo: "Tarifa Operações Pix",
+                         name: "",
+                         posted_date: ~N[2021-06-30 00:00:00],
+                         type: "debit"
+                       },
+                       %{
+                         amount: -0.5,
+                         amount_type: :debit,
+                         check_number: "0",
+                         currency: "",
+                         fit_id: "28586af6-6546-4e28-a7b5-f887f2131559",
+                         int_positive_amount: 50,
+                         memo: "Débito Pix",
+                         name: "",
+                         posted_date: ~N[2021-06-30 00:00:00],
+                         type: "debit"
+                       },
+                       %{
+                         amount: 1.0,
+                         amount_type: :credit,
+                         check_number: "0",
+                         currency: "",
+                         fit_id: "c8be57a0-f757-4d91-b1c2-82127c5503ae",
+                         int_positive_amount: 100,
+                         memo: "Crédito Pix Chave",
+                         name: "",
+                         posted_date: ~N[2021-06-30 00:00:00],
+                         type: "credit"
+                       }
+                     ],
+                     start_date: ~N[2021-06-30 00:00:00]
+                   }
+                 }
+               ],
+               signon: %{
+                 export_date: ~N[2021-07-01 00:00:00],
+                 financial_institution: "Banco BS2 S.A.",
+                 language: "POR",
+                 status_code: 0,
+                 status_message: "",
                  status_severity: :info
                }
              }
@@ -423,7 +517,7 @@ defmodule Ofx.ParserTest do
       </OFX>
       """
 
-      assert_raise Error, "Date has invalid format or was not found", fn ->
+      assert_raise Error, "Amount is invalid or was not found", fn ->
         Parser.parse!(ofx_data)
       end
     end

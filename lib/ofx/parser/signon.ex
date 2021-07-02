@@ -3,8 +3,9 @@ defmodule Ofx.Parser.Signon do
 
   import SweetXml, only: [sigil_x: 2]
 
-  alias Ofx.Parser.{Error, Status}
+  alias Ofx.Parser.{Datetime, Error, Status}
 
+  @export_date ~x[SONRS/DTSERVER/text()]s
   @status ~x[SONRS/STATUS/CODE/text()]s
   @severity ~x[SONRS/STATUS/SEVERITY/text()]s
   @message ~x[SONRS/STATUS/MESSAGE/text()]s
@@ -17,8 +18,10 @@ defmodule Ofx.Parser.Signon do
     status_message = get(xml, @message)
     language = get(xml, @language)
     financial_institution = get(xml, @financial_institution)
+    export_date = get_and_format_export_date(xml, @export_date)
 
     %{
+      export_date: export_date,
       status_code: String.to_integer(status_code),
       status_severity: Status.format_severity(status_severity),
       status_message: status_message,
@@ -34,4 +37,12 @@ defmodule Ofx.Parser.Signon do
     do: Map.put(messages, :signon, signon)
 
   defp get(xml, expression), do: SweetXml.xpath(xml, expression)
+
+  defp get_and_format_export_date(xml, expression) do
+    xml
+    |> get(expression)
+    |> Datetime.format()
+  rescue
+    _error -> nil
+  end
 end

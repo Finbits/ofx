@@ -40,7 +40,7 @@ defmodule Ofx.Parser.Bank do
 
   defp format_statement(xml) do
     balance = get(xml, @balance)
-    balance_date = get(xml, @balance_date)
+    balance_date = get_and_format_date(xml, @balance_date)
     currency = get(xml, @currency)
 
     %{
@@ -62,7 +62,7 @@ defmodule Ofx.Parser.Bank do
 
   defp build_balance(balance, balance_date, currency) do
     %{
-      date: format_balance_date(balance_date),
+      date: balance_date,
       amount: Currency.amount_to_float(balance),
       int_positive_amount: Currency.amount_to_positive_integer(balance, currency),
       amount_type: Currency.amount_type(balance)
@@ -93,7 +93,4 @@ defmodule Ofx.Parser.Bank do
       date -> Datetime.format(date)
     end
   end
-
-  defp format_balance_date(""), do: nil
-  defp format_balance_date(balance_date), do: Datetime.format(balance_date)
 end
