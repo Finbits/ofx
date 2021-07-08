@@ -25,17 +25,61 @@ defmodule Ofx.Parser.BankTest do
                  currency: "BRL",
                  status: %{code: 0, severity: :info},
                  balance: %{
-                   date: ~N[2021-02-18 07:00:00],
+                   date: %DateTime{
+                     year: 2021,
+                     month: 2,
+                     day: 18,
+                     hour: 10,
+                     minute: 0,
+                     second: 0,
+                     time_zone: "EST",
+                     zone_abbr: "EST",
+                     utc_offset: -10_800,
+                     std_offset: 0
+                   },
                    amount: 6151.76,
                    int_positive_amount: 615_176,
                    amount_type: :credit
                  },
                  transactions: %{
-                   start_date: ~N[2021-01-21 07:00:00],
-                   end_date: ~N[2021-02-26 07:00:00],
+                   start_date: %DateTime{
+                     year: 2021,
+                     month: 1,
+                     day: 21,
+                     hour: 10,
+                     minute: 0,
+                     second: 0,
+                     time_zone: "EST",
+                     zone_abbr: "EST",
+                     utc_offset: -10_800,
+                     std_offset: 0
+                   },
+                   end_date: %DateTime{
+                     year: 2021,
+                     month: 2,
+                     day: 26,
+                     hour: 10,
+                     minute: 0,
+                     second: 0,
+                     time_zone: "EST",
+                     zone_abbr: "EST",
+                     utc_offset: -10_800,
+                     std_offset: 0
+                   },
                    list: [
                      %{
-                       posted_date: ~N[2021-01-21 07:00:00],
+                       posted_date: %DateTime{
+                         year: 2021,
+                         month: 1,
+                         day: 21,
+                         hour: 10,
+                         minute: 0,
+                         second: 0,
+                         time_zone: "EST",
+                         zone_abbr: "EST",
+                         utc_offset: -10_800,
+                         std_offset: 0
+                       },
                        fit_id: "20210121001",
                        check_number: "20210121001",
                        name: "",
@@ -68,7 +112,18 @@ defmodule Ofx.Parser.BankTest do
                  balance: %{
                    amount: 1_000_001.0,
                    amount_type: :credit,
-                   date: ~N[2017-01-27 12:00:00],
+                   date: %DateTime{
+                     year: 2017,
+                     month: 1,
+                     day: 27,
+                     hour: 12,
+                     minute: 0,
+                     second: 0,
+                     time_zone: "UTC",
+                     zone_abbr: "UTC",
+                     utc_offset: 0,
+                     std_offset: 0
+                   },
                    int_positive_amount: 100_000_100
                  },
                  currency: "USD",
@@ -89,7 +144,18 @@ defmodule Ofx.Parser.BankTest do
                        int_positive_amount: 4000,
                        memo: "",
                        name: "CHECK 275 342857403598",
-                       posted_date: ~N[2017-01-13 12:00:00],
+                       posted_date: %DateTime{
+                         year: 2017,
+                         month: 1,
+                         day: 13,
+                         hour: 12,
+                         minute: 0,
+                         second: 0,
+                         time_zone: "UTC",
+                         zone_abbr: "UTC",
+                         utc_offset: 0,
+                         std_offset: 0
+                       },
                        type: "check"
                      }
                    ]

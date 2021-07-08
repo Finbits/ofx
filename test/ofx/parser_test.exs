@@ -17,7 +17,18 @@ defmodule Ofx.ParserTest do
                  status_code: 0,
                  status_message: "",
                  status_severity: :info,
-                 export_date: ~N[2021-02-18 07:00:00]
+                 export_date: %DateTime{
+                   year: 2021,
+                   month: 2,
+                   day: 18,
+                   hour: 10,
+                   minute: 00,
+                   second: 00,
+                   time_zone: "EST",
+                   zone_abbr: "EST",
+                   utc_offset: -10_800,
+                   std_offset: 0
+                 }
                },
                bank: [
                  %{
@@ -25,7 +36,18 @@ defmodule Ofx.ParserTest do
                    account_type: "checking",
                    balance: %{
                      amount: 6151.76,
-                     date: ~N[2021-02-18 07:00:00],
+                     date: %DateTime{
+                       year: 2021,
+                       month: 2,
+                       day: 18,
+                       hour: 10,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "EST",
+                       zone_abbr: "EST",
+                       utc_offset: -10_800,
+                       std_offset: 0
+                     },
                      int_positive_amount: 615_176,
                      amount_type: :credit
                    },
@@ -35,7 +57,18 @@ defmodule Ofx.ParserTest do
                    routing_number: "0341",
                    status: %{code: 0, severity: :info},
                    transactions: %{
-                     end_date: ~N[2021-02-26 07:00:00],
+                     end_date: %DateTime{
+                       year: 2021,
+                       month: 2,
+                       day: 26,
+                       hour: 10,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "EST",
+                       zone_abbr: "EST",
+                       utc_offset: -10_800,
+                       std_offset: 0
+                     },
                      list: [
                        %{
                          amount: -44.99,
@@ -45,12 +78,34 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 4499,
                          memo: "DA  VIVO-SP 04077306573",
                          name: "",
-                         posted_date: ~N[2021-01-26 07:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 1,
+                           day: 26,
+                           hour: 10,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "EST",
+                           zone_abbr: "EST",
+                           utc_offset: -10_800,
+                           std_offset: 0
+                         },
                          amount_type: :debit,
                          type: "debit"
                        }
                      ],
-                     start_date: ~N[2021-01-21 07:00:00]
+                     start_date: %DateTime{
+                       year: 2021,
+                       month: 1,
+                       day: 21,
+                       hour: 10,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "EST",
+                       zone_abbr: "EST",
+                       utc_offset: -10_800,
+                       std_offset: 0
+                     }
                    }
                  }
                ]
@@ -70,7 +125,18 @@ defmodule Ofx.ParserTest do
                    balance: %{
                      amount: 1_000_001.0,
                      amount_type: :credit,
-                     date: ~N[2017-01-27 12:00:00],
+                     date: %DateTime{
+                       year: 2017,
+                       month: 1,
+                       day: 27,
+                       hour: 12,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     },
                      int_positive_amount: 100_000_100
                    },
                    currency: "USD",
@@ -79,7 +145,18 @@ defmodule Ofx.ParserTest do
                    routing_number: "019283745",
                    status: %{code: 0, severity: :info},
                    transactions: %{
-                     end_date: ~N[2017-01-27 12:00:00],
+                     end_date: %DateTime{
+                       year: 2017,
+                       month: 1,
+                       day: 27,
+                       hour: 12,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     },
                      list: [
                        %{
                          amount: -7.0,
@@ -90,7 +167,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 700,
                          memo: "This is where a memo goes",
                          name: "This is where the name is",
-                         posted_date: ~N[2017-01-23 12:00:00],
+                         posted_date: %DateTime{
+                           year: 2017,
+                           month: 1,
+                           day: 23,
+                           hour: 12,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "debit"
                        },
                        %{
@@ -102,7 +190,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 37_207,
                          memo: "#YOLO",
                          name: "BUYING ALL THE THINGS",
-                         posted_date: ~N[2017-01-20 12:00:00],
+                         posted_date: %DateTime{
+                           year: 2017,
+                           month: 1,
+                           day: 20,
+                           hour: 12,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "credit"
                        },
                        %{
@@ -114,11 +213,33 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 4000,
                          memo: "",
                          name: "CHECK 275 342857403598",
-                         posted_date: ~N[2017-01-13 12:00:00],
+                         posted_date: %DateTime{
+                           year: 2017,
+                           month: 1,
+                           day: 13,
+                           hour: 12,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "check"
                        }
                      ],
-                     start_date: ~N[1970-01-01 12:00:00]
+                     start_date: %DateTime{
+                       year: 1970,
+                       month: 1,
+                       day: 1,
+                       hour: 12,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     }
                    }
                  },
                  %{
@@ -127,7 +248,18 @@ defmodule Ofx.ParserTest do
                    balance: %{
                      amount: 85_263.0,
                      amount_type: :credit,
-                     date: ~N[2017-01-27 12:00:00],
+                     date: %DateTime{
+                       year: 2017,
+                       month: 1,
+                       day: 27,
+                       hour: 12,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     },
                      int_positive_amount: 8_526_300
                    },
                    currency: "USD",
@@ -136,7 +268,18 @@ defmodule Ofx.ParserTest do
                    routing_number: "019283745",
                    status: %{code: 0, severity: :info},
                    transactions: %{
-                     end_date: ~N[2017-01-27 12:00:00],
+                     end_date: %DateTime{
+                       year: 2017,
+                       month: 1,
+                       day: 27,
+                       hour: 12,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     },
                      list: [
                        %{
                          amount: -7.0,
@@ -147,11 +290,33 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 700,
                          memo: "This is where a memo goes",
                          name: "This is where the name is",
-                         posted_date: ~N[2017-01-23 12:00:00],
+                         posted_date: %DateTime{
+                           year: 2017,
+                           month: 1,
+                           day: 23,
+                           hour: 12,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "debit"
                        }
                      ],
-                     start_date: ~N[1970-01-01 12:00:00]
+                     start_date: %DateTime{
+                       year: 1970,
+                       month: 1,
+                       day: 1,
+                       hour: 12,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     }
                    }
                  }
                ],
@@ -161,7 +326,18 @@ defmodule Ofx.ParserTest do
                  status_code: 0,
                  status_message: "",
                  status_severity: :info,
-                 export_date: ~N[2017-01-27 06:01:31]
+                 export_date: %DateTime{
+                   year: 2017,
+                   month: 1,
+                   day: 27,
+                   hour: 11,
+                   minute: 1,
+                   second: 31,
+                   time_zone: "EST",
+                   zone_abbr: "EST",
+                   utc_offset: -18_000,
+                   std_offset: 0
+                 }
                }
              }
     end
@@ -180,7 +356,18 @@ defmodule Ofx.ParserTest do
                status_code: 0,
                status_message: "",
                status_severity: :info,
-               export_date: ~N[2017-01-27 06:01:31]
+               export_date: %DateTime{
+                 year: 2017,
+                 month: 1,
+                 day: 27,
+                 hour: 11,
+                 minute: 1,
+                 second: 31,
+                 time_zone: "EST",
+                 zone_abbr: "EST",
+                 utc_offset: -18_000,
+                 std_offset: 0
+               }
              }
     end
 
@@ -199,7 +386,18 @@ defmodule Ofx.ParserTest do
                     status_message:
                       "We were unable to process your request. Please try again later.",
                     status_severity: :error,
-                    export_date: ~N[2018-10-07 18:25:26]
+                    export_date: %DateTime{
+                      year: 2018,
+                      month: 10,
+                      day: 07,
+                      hour: 22,
+                      minute: 25,
+                      second: 26,
+                      time_zone: "UTC",
+                      zone_abbr: "UTC",
+                      utc_offset: -14_400,
+                      std_offset: 0
+                    }
                   }
                 }}
     end
@@ -257,7 +455,18 @@ defmodule Ofx.ParserTest do
                  status_code: 0,
                  status_message: "",
                  status_severity: :info,
-                 export_date: ~N[2021-02-18 07:00:00]
+                 export_date: %DateTime{
+                   year: 2021,
+                   month: 02,
+                   day: 18,
+                   hour: 10,
+                   minute: 0,
+                   second: 0,
+                   time_zone: "EST",
+                   zone_abbr: "EST",
+                   utc_offset: -10_800,
+                   std_offset: 0
+                 }
                },
                bank: [
                  %{
@@ -265,7 +474,18 @@ defmodule Ofx.ParserTest do
                    account_type: "checking",
                    balance: %{
                      amount: 6151.76,
-                     date: ~N[2021-02-18 07:00:00],
+                     date: %DateTime{
+                       year: 2021,
+                       month: 02,
+                       day: 18,
+                       hour: 10,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "EST",
+                       zone_abbr: "EST",
+                       utc_offset: -10_800,
+                       std_offset: 0
+                     },
                      int_positive_amount: 615_176,
                      amount_type: :credit
                    },
@@ -275,7 +495,18 @@ defmodule Ofx.ParserTest do
                    routing_number: "0341",
                    status: %{code: 0, severity: :info},
                    transactions: %{
-                     end_date: ~N[2021-02-26 07:00:00],
+                     end_date: %DateTime{
+                       year: 2021,
+                       month: 02,
+                       day: 26,
+                       hour: 10,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "EST",
+                       zone_abbr: "EST",
+                       utc_offset: -10_800,
+                       std_offset: 0
+                     },
                      list: [
                        %{
                          amount: -44.99,
@@ -285,12 +516,34 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 4499,
                          memo: "DA  VIVO-SP 04077306573",
                          name: "",
-                         posted_date: ~N[2021-01-26 07:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 01,
+                           day: 26,
+                           hour: 10,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "EST",
+                           zone_abbr: "EST",
+                           utc_offset: -10_800,
+                           std_offset: 0
+                         },
                          amount_type: :debit,
                          type: "debit"
                        }
                      ],
-                     start_date: ~N[2021-01-21 07:00:00]
+                     start_date: %DateTime{
+                       year: 2021,
+                       month: 1,
+                       day: 21,
+                       hour: 10,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "EST",
+                       zone_abbr: "EST",
+                       utc_offset: -10_800,
+                       std_offset: 0
+                     }
                    }
                  }
                ]
@@ -310,7 +563,18 @@ defmodule Ofx.ParserTest do
                    balance: %{
                      amount: 1.0,
                      amount_type: :credit,
-                     date: ~N[2021-06-29 00:00:00],
+                     date: %DateTime{
+                       year: 2021,
+                       month: 6,
+                       day: 29,
+                       hour: 0,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     },
                      int_positive_amount: 100
                    },
                    currency: "BRL",
@@ -319,7 +583,18 @@ defmodule Ofx.ParserTest do
                    routing_number: "077",
                    status: %{code: 0, severity: :info},
                    transactions: %{
-                     end_date: ~N[2021-06-29 00:00:00],
+                     end_date: %DateTime{
+                       year: 2021,
+                       month: 6,
+                       day: 29,
+                       hour: 0,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     },
                      list: [
                        %{
                          amount: 159.9,
@@ -330,7 +605,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 15990,
                          memo: "PAGAMENTO CASHBACK 9832-01",
                          name: "",
-                         posted_date: ~N[2021-04-12 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 4,
+                           day: 12,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "credit"
                        },
                        %{
@@ -342,7 +628,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 15990,
                          memo: "PAGAMENTO FATURA INTER - Pagamento Fatura Cartão Inter",
                          name: "",
-                         posted_date: ~N[2021-05-05 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 5,
+                           day: 5,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "electronic_payment"
                        },
                        %{
@@ -354,7 +651,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 39,
                          memo: "CASHBACK CARTAO DE CREDITO -",
                          name: "",
-                         posted_date: ~N[2021-05-06 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 5,
+                           day: 6,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "credit"
                        },
                        %{
@@ -366,7 +674,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 22000,
                          memo: "PIX RECEBIDO - Cp :98127- Jonny",
                          name: "",
-                         posted_date: ~N[2021-06-07 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 6,
+                           day: 7,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "credit"
                        },
                        %{
@@ -378,7 +697,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 21990,
                          memo: "PAGAMENTO FATURA INTER - Débito Automático Fatura Cartão Inter",
                          name: "",
-                         posted_date: ~N[2021-06-07 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 6,
+                           day: 7,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "electronic_payment"
                        },
                        %{
@@ -390,11 +720,33 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 54,
                          memo: "CASHBACK CARTAO DE CREDITO -",
                          name: "",
-                         posted_date: ~N[2021-06-09 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 6,
+                           day: 9,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "credit"
                        }
                      ],
-                     start_date: ~N[2021-03-31 00:00:00]
+                     start_date: %DateTime{
+                       year: 2021,
+                       month: 3,
+                       day: 31,
+                       hour: 0,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     }
                    }
                  }
                ],
@@ -404,7 +756,18 @@ defmodule Ofx.ParserTest do
                  status_code: 0,
                  status_message: "",
                  status_severity: :info,
-                 export_date: ~N[2021-06-29 00:00:00]
+                 export_date: %DateTime{
+                   year: 2021,
+                   month: 6,
+                   day: 29,
+                   hour: 0,
+                   minute: 0,
+                   second: 0,
+                   time_zone: "UTC",
+                   zone_abbr: "UTC",
+                   utc_offset: 0,
+                   std_offset: 0
+                 }
                }
              }
     end
@@ -431,7 +794,18 @@ defmodule Ofx.ParserTest do
                    routing_number: "218",
                    status: %{code: 0, severity: :info},
                    transactions: %{
-                     end_date: ~N[2021-06-30 00:00:00],
+                     end_date: %DateTime{
+                       year: 2021,
+                       month: 6,
+                       day: 30,
+                       hour: 0,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     },
                      list: [
                        %{
                          amount: 1.0,
@@ -442,7 +816,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 100,
                          memo: "Crédito Pix Manual",
                          name: "",
-                         posted_date: ~N[2021-06-30 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 6,
+                           day: 30,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "credit"
                        },
                        %{
@@ -454,7 +839,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 50,
                          memo: "Tarifa Operações Pix",
                          name: "",
-                         posted_date: ~N[2021-06-30 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 6,
+                           day: 30,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "debit"
                        },
                        %{
@@ -466,7 +862,18 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 50,
                          memo: "Débito Pix",
                          name: "",
-                         posted_date: ~N[2021-06-30 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 6,
+                           day: 30,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "debit"
                        },
                        %{
@@ -478,16 +885,49 @@ defmodule Ofx.ParserTest do
                          int_positive_amount: 100,
                          memo: "Crédito Pix Chave",
                          name: "",
-                         posted_date: ~N[2021-06-30 00:00:00],
+                         posted_date: %DateTime{
+                           year: 2021,
+                           month: 6,
+                           day: 30,
+                           hour: 0,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
                          type: "credit"
                        }
                      ],
-                     start_date: ~N[2021-06-30 00:00:00]
+                     start_date: %DateTime{
+                       year: 2021,
+                       month: 6,
+                       day: 30,
+                       hour: 0,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: 0,
+                       std_offset: 0
+                     }
                    }
                  }
                ],
                signon: %{
-                 export_date: ~N[2021-07-01 00:00:00],
+                 export_date: %DateTime{
+                   year: 2021,
+                   month: 7,
+                   day: 1,
+                   hour: 0,
+                   minute: 0,
+                   second: 0,
+                   time_zone: "UTC",
+                   zone_abbr: "UTC",
+                   utc_offset: 0,
+                   std_offset: 0
+                 },
                  financial_institution: "Banco BS2 S.A.",
                  language: "POR",
                  status_code: 0,
