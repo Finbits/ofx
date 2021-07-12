@@ -342,6 +342,159 @@ defmodule Ofx.ParserTest do
              }
     end
 
+    test "parse an account with multiple balances" do
+      ofx_raw = File.read!("test/support/fixtures/account_with_multiple_months.ofx")
+
+      assert {:ok, result} = Parser.parse(ofx_raw)
+
+      assert result == %{
+               bank: [
+                 %{
+                   account_id: "1123987643",
+                   account_type: "checking",
+                   balance: %{
+                     amount: -1339.73,
+                     amount_type: :debit,
+                     date: %DateTime{
+                       year: 2017,
+                       month: 7,
+                       day: 27,
+                       hour: 12,
+                       minute: 37,
+                       second: 42,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: -14_400,
+                       std_offset: 0
+                     },
+                     int_positive_amount: 133_973
+                   },
+                   currency: "BRL",
+                   description: "",
+                   request_id: "46150a45b3e6416fb859cbf6bcd425cd",
+                   routing_number: "0341",
+                   status: %{code: 0, severity: :info},
+                   transactions: %{
+                     end_date: %DateTime{
+                       year: 2017,
+                       month: 7,
+                       day: 27,
+                       hour: 12,
+                       minute: 37,
+                       second: 43,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: -14_400,
+                       std_offset: 0
+                     },
+                     list: [
+                       %{
+                         amount: 908.34,
+                         amount_type: :credit,
+                         check_number: "",
+                         currency: "BRL",
+                         fit_id: "15009573023498726",
+                         int_positive_amount: 90_834,
+                         memo: "Incoming Payment",
+                         name: "PREMIERE MOISSON MONTREAL QC",
+                         posted_date: %DateTime{
+                           year: 2017,
+                           month: 5,
+                           day: 25,
+                           hour: 12,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
+                         type: "credit"
+                       },
+                       %{
+                         amount: 7034.89,
+                         amount_type: :credit,
+                         check_number: "",
+                         currency: "BRL",
+                         fit_id: "150095730816687",
+                         int_positive_amount: 703_489,
+                         memo: "Incoming Transaction",
+                         name: "PREMIERE MOISSON MONTREAL QC",
+                         posted_date: %DateTime{
+                           year: 2017,
+                           month: 6,
+                           day: 9,
+                           hour: 12,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
+                         type: "credit"
+                       },
+                       %{
+                         amount: -10.54,
+                         amount_type: :debit,
+                         check_number: "",
+                         currency: "BRL",
+                         fit_id: "1500957308166",
+                         int_positive_amount: 1054,
+                         memo: "Rewards earned: 0.21 ~ Category: Groceries",
+                         name: "PREMIERE MOISSON MONTREAL QC",
+                         posted_date: %DateTime{
+                           year: 2017,
+                           month: 7,
+                           day: 17,
+                           hour: 12,
+                           minute: 0,
+                           second: 0,
+                           time_zone: "UTC",
+                           zone_abbr: "UTC",
+                           utc_offset: 0,
+                           std_offset: 0
+                         },
+                         type: "debit"
+                       }
+                     ],
+                     start_date: %DateTime{
+                       year: 2017,
+                       month: 5,
+                       day: 26,
+                       hour: 20,
+                       minute: 0,
+                       second: 0,
+                       time_zone: "UTC",
+                       zone_abbr: "UTC",
+                       utc_offset: -14_400,
+                       std_offset: 0
+                     }
+                   }
+                 }
+               ],
+               signon: %{
+                 export_date: %DateTime{
+                   year: 2017,
+                   month: 7,
+                   day: 27,
+                   hour: 16,
+                   minute: 37,
+                   second: 42,
+                   time_zone: "UTC",
+                   zone_abbr: "UTC",
+                   utc_offset: -14_400,
+                   std_offset: 0
+                 },
+                 financial_institution: "Itau",
+                 language: "ENG",
+                 status_code: 0,
+                 status_message: "Authentication Successful.",
+                 status_severity: :info
+               }
+             }
+    end
+
     test "parse a xml format ofx" do
       ofx_raw = File.read!("test/support/fixtures/xml_header_example.ofx")
 

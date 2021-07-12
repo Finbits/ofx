@@ -8,7 +8,7 @@ defmodule Ofx.Parser.Bank do
   @statements ~x"./STMTTRNRS"l
   @account_id ~x"//ACCTID/text()"s
   @balance ~x"//BALAMT/text()"s
-  @balance_date ~x"//DTASOF/text()"s
+  @balance_date ~x"//LEDGERBAL/DTASOF/text()"s
   @currency ~x"//CURDEF/text()"s
   @account_type ~x"//ACCTTYPE/text()"s
   @description ~x"//DESC/text()"s
