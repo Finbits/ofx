@@ -22,7 +22,18 @@ defmodule Ofx.Parser.TransactionTest do
                check_number: "20210121001",
                memo: "DA  COMGAS 39309134",
                name: "",
-               posted_date: ~N[2021-01-21 07:00:00],
+               posted_date: %DateTime{
+                 year: 2021,
+                 month: 01,
+                 day: 21,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "EST",
+                 zone_abbr: "EST",
+                 utc_offset: -10_800,
+                 std_offset: 0
+               },
                type: "debit",
                currency: "BRL",
                amount: -34.34,
@@ -48,7 +59,18 @@ defmodule Ofx.Parser.TransactionTest do
                  check_number: "20210121001",
                  memo: "DA  COMGAS 39309134",
                  name: "",
-                 posted_date: ~N[2021-01-21 07:00:00],
+                 posted_date: %DateTime{
+                   year: 2021,
+                   month: 01,
+                   day: 21,
+                   hour: 10,
+                   minute: 0,
+                   second: 0,
+                   time_zone: "EST",
+                   zone_abbr: "EST",
+                   utc_offset: -10_800,
+                   std_offset: 0
+                 },
                  type: "debit",
                  currency: "BHD",
                  amount: -34.34,
@@ -60,7 +82,18 @@ defmodule Ofx.Parser.TransactionTest do
                  check_number: "20210121001",
                  memo: "DA  COMGAS 39309134",
                  name: "",
-                 posted_date: ~N[2021-01-21 07:00:00],
+                 posted_date: %DateTime{
+                   year: 2021,
+                   month: 01,
+                   day: 21,
+                   hour: 10,
+                   minute: 0,
+                   second: 0,
+                   time_zone: "EST",
+                   zone_abbr: "EST",
+                   utc_offset: -10_800,
+                   std_offset: 0
+                 },
                  type: "credit",
                  currency: "CVE",
                  amount: 34.0,
@@ -91,7 +124,18 @@ defmodule Ofx.Parser.TransactionTest do
                  int_positive_amount: 3400,
                  memo: "DA  COMGAS 39309134",
                  name: "",
-                 posted_date: ~N[2021-01-21 07:00:00],
+                 posted_date: %DateTime{
+                   year: 2021,
+                   month: 01,
+                   day: 21,
+                   hour: 10,
+                   minute: 0,
+                   second: 0,
+                   time_zone: "EST",
+                   zone_abbr: "EST",
+                   utc_offset: -10_800,
+                   std_offset: 0
+                 },
                  type: "interest"
                },
                %{
@@ -103,7 +147,18 @@ defmodule Ofx.Parser.TransactionTest do
                  int_positive_amount: 3400,
                  memo: "DA  COMGAS 39309134",
                  name: "",
-                 posted_date: ~N[2021-01-21 07:00:00],
+                 posted_date: %DateTime{
+                   year: 2021,
+                   month: 01,
+                   day: 21,
+                   hour: 10,
+                   minute: 0,
+                   second: 0,
+                   time_zone: "EST",
+                   zone_abbr: "EST",
+                   utc_offset: -10_800,
+                   std_offset: 0
+                 },
                  type: "dividend"
                },
                %{
@@ -115,7 +170,18 @@ defmodule Ofx.Parser.TransactionTest do
                  int_positive_amount: 3400,
                  memo: "DA  COMGAS 39309134",
                  name: "",
-                 posted_date: ~N[2021-01-21 07:00:00],
+                 posted_date: %DateTime{
+                   year: 2021,
+                   month: 01,
+                   day: 21,
+                   hour: 10,
+                   minute: 0,
+                   second: 0,
+                   time_zone: "EST",
+                   zone_abbr: "EST",
+                   utc_offset: -10_800,
+                   std_offset: 0
+                 },
                  type: "point_of_sale"
                }
              ]
@@ -148,7 +214,18 @@ defmodule Ofx.Parser.TransactionTest do
                int_positive_amount: 34_340,
                memo: "",
                name: "",
-               posted_date: ~N[2021-01-21 07:00:00],
+               posted_date: %DateTime{
+                 year: 2021,
+                 month: 01,
+                 day: 21,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "EST",
+                 zone_abbr: "EST",
+                 utc_offset: -10_800,
+                 std_offset: 0
+               },
                type: nil
              }
     end

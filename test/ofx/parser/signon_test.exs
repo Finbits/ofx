@@ -32,7 +32,18 @@ defmodule Ofx.Parser.SignonTest do
                status_code: 0,
                status_severity: :info,
                status_message: "SUCCESS",
-               export_date: ~N[2021-02-18 07:00:00]
+               export_date: %DateTime{
+                 year: 2021,
+                 month: 02,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "EST",
+                 zone_abbr: "EST",
+                 utc_offset: -10_800,
+                 std_offset: 0
+               }
              }
     end
 
@@ -60,7 +71,18 @@ defmodule Ofx.Parser.SignonTest do
                status_code: 0,
                status_severity: :info,
                status_message: "",
-               export_date: ~N[2021-02-18 07:00:00]
+               export_date: %DateTime{
+                 year: 2021,
+                 month: 02,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "EST",
+                 zone_abbr: "EST",
+                 utc_offset: -10_800,
+                 std_offset: 0
+               }
              }
     end
 

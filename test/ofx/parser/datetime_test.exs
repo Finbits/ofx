@@ -4,22 +4,202 @@ defmodule Ofx.Parser.DateTimeTest do
   alias Ofx.Parser.{Datetime, Error}
 
   describe "format/1" do
-    test "format ofx date to naivedatetime" do
-      without_tz = "20150730120000"
-      positive_tz = "20210218100000[03:EST]"
-      positive_fractional_tz = "20210218100000[03.30:EST]"
-      negative_tz = "20210218100000[-03:EST]"
-      negative_fractional_tz = "20210218100000[-03.30:EST]"
-      miliseconds_and_tz = "20170727163742.733[-4:EDT]"
-      date_without_time = "20210629"
+    test "format datetime without timezone" do
+      without_tz = "20150730100000"
 
-      assert Datetime.format(without_tz) == ~N[2015-07-30 12:00:00]
-      assert Datetime.format(positive_tz) == ~N[2021-02-18 13:00:00]
-      assert Datetime.format(positive_fractional_tz) == ~N[2021-02-18 13:30:00]
-      assert Datetime.format(negative_tz) == ~N[2021-02-18 07:00:00]
-      assert Datetime.format(negative_fractional_tz) == ~N[2021-02-18 06:30:00]
-      assert Datetime.format(miliseconds_and_tz) == ~N[2017-07-27 12:37:42]
-      assert Datetime.format(date_without_time) == ~N[2021-06-29 00:00:00]
+      assert Datetime.format(without_tz) ==
+               %DateTime{
+                 year: 2015,
+                 month: 7,
+                 day: 30,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: 0,
+                 std_offset: 0
+               }
+    end
+
+    test "format datetime with positive timezone" do
+      positive_tz = "20210218100000[+05:UTC]"
+
+      assert Datetime.format(positive_tz) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: 5 * 3600,
+                 std_offset: 0
+               }
+    end
+
+    test "format datetime with positive fractional timezone" do
+      positive_fractional_tz = "20210218100000[03.30:UTC]"
+
+      assert Datetime.format(positive_fractional_tz) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: 12_600,
+                 std_offset: 0
+               }
+    end
+
+    test "format datetime with negative timezone" do
+      negative_tz = "20210218100000[-03:UTC]"
+
+      assert Datetime.format(negative_tz) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: -10_800,
+                 std_offset: 0
+               }
+    end
+
+    test "format datetime with negative fractional timezone" do
+      negative_fractional_tz = "20210218100000[-03.30:UTC]"
+
+      assert Datetime.format(negative_fractional_tz) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: -12_600,
+                 std_offset: 0
+               }
+    end
+
+    test "format datetime with miliseconds" do
+      miliseconds_and_tz = "20210218163742.733[-4:UTC]"
+
+      assert Datetime.format(miliseconds_and_tz) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 16,
+                 minute: 37,
+                 second: 42,
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: -14_400,
+                 std_offset: 0
+               }
+    end
+
+    test "format date without time" do
+      date_without_time = "20210218"
+
+      assert Datetime.format(date_without_time) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 0,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: 0,
+                 std_offset: 0
+               }
+    end
+
+    test "format EST timezone" do
+      est_tz = "20210218100000[-05:EST]"
+
+      assert Datetime.format(est_tz) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "EST",
+                 zone_abbr: "EST",
+                 utc_offset: -18_000,
+                 std_offset: 0
+               }
+    end
+
+    test "format unknown timezones as UTC" do
+      edt_tz = "20210218100000[-04:EDT]"
+
+      assert Datetime.format(edt_tz) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: -14_400,
+                 std_offset: 0
+               }
+    end
+
+    test "format positive GMT timezone" do
+      positive_gmt = "20210218100000[03:GMT]"
+
+      assert Datetime.format(positive_gmt) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "GMT",
+                 zone_abbr: "GMT",
+                 utc_offset: 10_800,
+                 std_offset: 0
+               }
+    end
+
+    test "format negative GMT timezone" do
+      negative_gmt = "20210218100000[-03:GMT]"
+
+      assert Datetime.format(negative_gmt) ==
+               %DateTime{
+                 year: 2021,
+                 month: 2,
+                 day: 18,
+                 hour: 10,
+                 minute: 0,
+                 second: 0,
+                 time_zone: "GMT",
+                 zone_abbr: "GMT",
+                 utc_offset: -10_800,
+                 std_offset: 0
+               }
     end
 
     test "raise exception when given value is nil" do
