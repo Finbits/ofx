@@ -3,221 +3,153 @@ defmodule Ofx.Parser.Datetime do
 
   alias Ofx.Parser.Error
 
-  defstruct [:input, :datetime_string, :date, :time, :offset, :timezone, :zone_abbreviation]
+  defstruct [
+    :year,
+    :month,
+    :day,
+    :hour,
+    :minute,
+    :second,
+    :microsecond,
+    :utc_offset,
+    :time_zone,
+    :zone_abbr,
+    std_offset: 0,
+    calendar: Calendar.ISO
+  ]
 
-  # Parse OFX datetime string to formated DateTime struct
-  #
-  # Ex:
-  #
-  #    format("20210218100000[-05:EST]")
-  #    => #DateTime<2021-02-18 10:00:00-05:00 EST>
-  #
-  #    format("20210218")
-  #    => #DateTime<2021-02-18 00:00:00+00:00 UTC>
-  #
-  #    format("00000000")
-  #    => (Ofx.Parser.Error) Date has invalid format or was not found
-  def format(input) do
-    %__MODULE__{input: input}
-    |> extract_timezone()
-    |> extract_date()
-    |> extract_time()
-    |> ensure_valid_timezone()
+  @datetime_regex ~r'^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})(?<hour>\d{2})?(?<minute>\d{2})?(?<second>\d{2})?\.?(?<microsecond>\d{3})?(\[(?<utc_offset>[-+]?\d{1,2}(\.\d{1,2})?)?:(?<time_zone>\w{3}))?'
+  @doc """
+  Regex explanation
+
+  Is required the string stars with (by the operator ^) the date groups:
+  - year: the first 4 digits - (?<year>\d{4})
+  - month: the next 2 digits - (?<month>\d{2})
+  - day: the next 2 digits - (?<day>\d{2})
+
+  After the date groups we have the time gourps witch are optionals.
+  They are matched after date groups as:
+
+  - hour: the next 2 digits - (?<hour>\d{2})
+  - minute: the next 2 digits - (?<minute>\d{2})
+  - second: the next 2 digits - (?<second>\d{2})
+
+  The microsecond is an optional group of time's groups. Its start delimitator
+  is the \.?
+
+  - microsecond: optional 3 digits after second group - \.?(?<microsecond>\d{3})?
+
+  The timezone groups are optional too and they must came after time groups.
+  Its start delimitator is the \[
+
+
+  - utc_offset: came after the time groups.
+    - It can have a numerical signal - [-+]?
+    - It must have one or two digits for the hours- \d{1,2}
+    - It can have one or two digits for the minutes delimited by \. - (\.\d{1,2})?
+    - The entire group regex: (?<utc_offset>[-+]?\d{1,2}(\.\d{1,2})?)?
+  - time_zone: the next 3 chars after the delimitator : - (?<time_zone>\w{3})
+  """
+
+  def format(input) when is_binary(input) do
+    input
+    |> to_struct()
+    |> adjust_microsecond()
+    |> adjust_time_zone()
+    |> adjust_utc_offset()
     |> to_datetime()
-  rescue
-    _any ->
-      reraise(
-        Error,
-        %{message: "Date has invalid format or was not found", data: input},
-        __STACKTRACE__
-      )
-  end
-
-  # Extract datetime and timezone attributes
-  #
-  # Ex:
-  #
-  #    extract_timezone(%{input: "20210218100000[-04:EDT]"})
-  #    => %{
-  #      datetime_string: "20210218100000",
-  #      timezone: "EDT",
-  #      offset: "-04"
-  #    }
-  #
-  #    extract_timezone(%{input: "20170113120000"})
-  #    => %{
-  #      datetime_string: "20170113120000",
-  #      timezone: "UTC",
-  #      offset: "0"
-  #    }
-  #
-  #    extract_timezone(%{input: "20210218"})
-  #    => %{
-  #      datetime_string: "20210218",
-  #      timezone: "UTC",
-  #      offset: "0"
-  #    }
-  defp extract_timezone(%{input: input} = token) do
-    case String.split(input, ["[", ":", "]"], trim: true) do
-      [datetime_string, offset, timezone] ->
-        %{
-          token
-          | datetime_string: datetime_string,
-            offset: offset,
-            timezone: timezone
-        }
-
-      [datetime_string] ->
-        %{
-          token
-          | datetime_string: datetime_string,
-            offset: "0",
-            timezone: "UTC"
-        }
+    |> case do
+      {:ok, datetime} -> datetime
+      _error -> raise_error(input)
     end
   end
 
-  # Build and validate date struct
-  #
-  # Ex:
-  #
-  #    extract_date(%{datetime_string: "20210218100000"})
-  #    => %{
-  #      date: ~D[2021-02-18],
-  #    }
-  #
-  #    extract_date(%{datetime_string: "20210218"})
-  #    => %{
-  #      date: ~D[2021-02-18],
-  #    }
-  #
-  #    extract_date(%{datetime_string: "00000000"})
-  #    => (ArgumentError) cannot build date, reason: :invalid_date
-  defp extract_date(%{datetime_string: datetime_string} = token) do
-    {date_string, _time} = String.split_at(datetime_string, 8)
+  def format(input), do: raise_error(input)
 
-    %{
-      token
-      | date:
-          Date.new!(
-            to_integer(date_string, 0..3),
-            to_integer(date_string, 4..5),
-            to_integer(date_string, 6..7)
-          )
-    }
-  end
+  defp to_struct(input) do
+    case Regex.named_captures(@datetime_regex, input) do
+      nil ->
+        {:error, "invalid datetime"}
 
-  # Build and validate time struct
-  #
-  # Ex:
-  #
-  #    extract_time(%{datetime_string: "20210218100000"})
-  #    => %{
-  #      time: ~T[10:00:00],
-  #    }
-  #
-  #    extract_time(%{datetime_string: "20210218"})
-  #    => %{
-  #      time: ~T[00:00:00],
-  #    }
-  #
-  #    extract_time(%{datetime_string: "20210218999999"})
-  #    => (ArgumentError) cannot build time, reason: :invalid_time
-  defp extract_time(%{datetime_string: datetime_string} = token) do
-    {_date, time_string} = String.split_at(datetime_string, 8)
-
-    %{
-      token
-      | time:
-          Time.new!(
-            to_integer(time_string, 0..1),
-            to_integer(time_string, 2..3),
-            to_integer(time_string, 4..5)
-          )
-    }
-  end
-
-  # Ensure valid timezone, converting any "invalid/unknown" timezone to UTC
-  #
-  # Ex:
-  #
-  #    ensure_valid_timezone(%{timezone: "UTC"})
-  #    => %{
-  #      timezone: "UTC",
-  #      zone_abbreviation: "UTC"
-  #    }
-  #
-  #    ensure_valid_timezone(%{timezone: "EST"})
-  #    => %{
-  #      timezone: "EST",
-  #      zone_abbreviation: "EST"
-  #    }
-  #
-  #    ensure_valid_timezone(%{timezone: "UNKNOWN"})
-  #    => %{
-  #      timezone: "UTC",
-  #      zone_abbreviation: "UTC"
-  #    }
-  defp ensure_valid_timezone(%{timezone: timezone} = token) do
-    case Tzdata.periods(timezone) do
-      {:ok, [%{zone_abbr: zone_abbr} | _]} ->
-        %{token | zone_abbreviation: zone_abbr}
-
-      {:error, :not_found} ->
-        %{token | zone_abbreviation: "UTC", timezone: "UTC"}
+      captured ->
+        {:ok,
+         %__MODULE__{
+           year: get_int(captured, "year"),
+           month: get_int(captured, "month"),
+           day: get_int(captured, "day"),
+           hour: get_int(captured, "hour"),
+           minute: get_int(captured, "minute"),
+           second: get_int(captured, "second"),
+           microsecond: get_int(captured, "microsecond"),
+           utc_offset: get(captured, "utc_offset", "0"),
+           time_zone: get(captured, "time_zone", "UTC")
+         }}
     end
   end
 
-  # Format output to DateTime
-  #
-  # Ex:
-  #
-  #    to_datetime(%{date: ~D[2021-02-18], time: ~T[10:00:00], offset: "-03", timezone: "UTC"})
-  #    => #DateTime<2021-02-18 10:00:00-03:00 UTC>
-  #
-  defp to_datetime(%{
-         date: date,
-         time: time,
-         offset: offset,
-         timezone: timezone,
-         zone_abbreviation: zone_abbreviation
-       }) do
-    %DateTime{
-      year: date.year,
-      month: date.month,
-      day: date.day,
-      hour: time.hour,
-      minute: time.minute,
-      second: time.second,
-      time_zone: timezone,
-      zone_abbr: zone_abbreviation,
-      utc_offset: offset_in_seconds(offset),
-      std_offset: 0
-    }
+  defp adjust_microsecond({:error, _reason} = err), do: err
+
+  defp adjust_microsecond({:ok, datetime_struct}) do
+    microsecond = {datetime_struct.microsecond * 1000, 3}
+
+    {:ok, %{datetime_struct | microsecond: microsecond}}
   end
 
-  defp to_integer(str), do: to_integer(str, 0..-1)
+  defp adjust_time_zone({:error, _reason} = err), do: err
 
-  defp to_integer("", _range), do: 0
+  defp adjust_time_zone({:ok, datetime_struct}) do
+    {time_zone, zone_abbr} = find_correct_time_zone_info(datetime_struct.time_zone)
 
-  defp to_integer(str, range) do
-    str
-    |> String.slice(range)
-    |> String.to_integer()
+    {:ok, %{datetime_struct | time_zone: time_zone, zone_abbr: zone_abbr}}
   end
 
-  defp offset_in_seconds("-" <> offset), do: -offset_in_seconds(offset)
+  defp adjust_utc_offset({:error, _reason} = err), do: err
 
-  defp offset_in_seconds(offset) do
-    case String.split(offset, ".") do
-      [hours] ->
-        to_integer(hours) * 60 * 60
+  defp adjust_utc_offset({:ok, datetime_struct}) do
+    utc_offset = parse_utc_offset(datetime_struct.utc_offset)
 
-      [hours, minutes] ->
-        hours_offset = to_integer(hours) * 60 * 60
-        minutes_offset = to_integer(minutes) * 60
+    {:ok, %{datetime_struct | utc_offset: utc_offset}}
+  end
 
-        hours_offset + minutes_offset
+  defp to_datetime({:error, _reason} = err), do: err
+
+  defp to_datetime({:ok, datetime_struct}) do
+    datetime = Map.put(datetime_struct, :__struct__, DateTime)
+
+    datetime
+    |> DateTime.to_iso8601()
+    |> DateTime.from_iso8601()
+    |> case do
+      {:ok, _parsed_utc0_datetime, _offset} -> {:ok, datetime}
+    end
+  end
+
+  defp find_correct_time_zone_info(time_zone) do
+    case Tzdata.periods(time_zone) do
+      {:ok, [found | _]} -> {time_zone, found.zone_abbr}
+      {:error, :not_found} -> {"UTC", "UTC"}
+    end
+  end
+
+  defp parse_utc_offset("-" <> utc_offset), do: -parse_utc_offset(utc_offset)
+
+  defp parse_utc_offset(utc_offset) do
+    case String.split(utc_offset, ".") do
+      [hours] -> String.to_integer(hours) * 3600
+      [hours, minutes] -> String.to_integer(hours) * 3600 + String.to_integer(minutes) * 60
+    end
+  end
+
+  defp raise_error(input) do
+    raise(Error, %{message: "Date has invalid format or was not found", data: input})
+  end
+
+  defp get_int(map, key), do: map |> get(key, "0") |> String.to_integer()
+
+  defp get(map, key, default) do
+    case Map.fetch!(map, key) do
+      "" -> default
+      value -> value
     end
   end
 end
