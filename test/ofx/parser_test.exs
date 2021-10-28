@@ -388,6 +388,25 @@ defmodule Ofx.ParserTest do
              }
     end
 
+    test "parse ofx with zeroed datetime" do
+      ofx_raw = File.read!("test/support/fixtures/zero-date.ofx")
+
+      assert {:ok, result} = Parser.parse(ofx_raw)
+
+      assert %{
+               bank: [
+                 %{
+                   balance: %{
+                     date: nil
+                   }
+                 }
+               ],
+               signon: %{
+                 export_date: nil
+               }
+             } = result
+    end
+
     test "ofx with status error" do
       ofx_raw = File.read!("test/support/fixtures/status_error.ofx")
 

@@ -113,6 +113,10 @@ defmodule Ofx.Parser.Datetime do
 
   defp to_datetime({:error, _reason} = err), do: err
 
+  defp to_datetime({:ok, %{year: 0, month: 0, day: 0, hour: 0, minute: 0, second: 0}}) do
+    {:ok, nil}
+  end
+
   defp to_datetime({:ok, datetime_struct}) do
     datetime = Map.put(datetime_struct, :__struct__, DateTime)
 
@@ -121,6 +125,7 @@ defmodule Ofx.Parser.Datetime do
     |> DateTime.from_iso8601()
     |> case do
       {:ok, _parsed_utc0_datetime, _offset} -> {:ok, datetime}
+      {:error, reason} -> {:error, reason}
     end
   end
 
