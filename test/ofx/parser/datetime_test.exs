@@ -213,6 +213,14 @@ defmodule Ofx.Parser.DateTimeTest do
                }
     end
 
+    test "returns nil when datetime is zero only" do
+      zero_datetime = "00000000000000"
+      zero_date_only = "00000000"
+
+      assert Datetime.format(zero_datetime) == nil
+      assert Datetime.format(zero_date_only) == nil
+    end
+
     test "raise exception when given value is nil" do
       assert_raise Error, "Date has invalid format or was not found", fn ->
         Datetime.format(nil)
