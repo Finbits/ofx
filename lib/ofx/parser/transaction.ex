@@ -12,6 +12,7 @@ defmodule Ofx.Parser.Transaction do
   @name ~x"NAME/text()"s
   @memo ~x"MEMO/text()"s
   @check_number ~x"CHECKNUM/text()"s
+  @ref_num ~x"REFNUM/text()"s
   @currency ~x"CURRENCY/text()"s
   @original_currency ~x"ORIGCURRENCY/text()"s
 
@@ -21,6 +22,7 @@ defmodule Ofx.Parser.Transaction do
 
     %{
       check_number: get(xml, @check_number),
+      ref_num: get(xml, @ref_num),
       fit_id: get(xml, @fit_id),
       name: get(xml, @name),
       memo: get(xml, @memo),
