@@ -20,6 +20,7 @@ defmodule Ofx.Parser.TransactionTest do
       assert result == %{
                fit_id: "20210121001",
                check_number: "20210121001",
+               ref_num: "",
                memo: "DA  COMGAS 39309134",
                name: "",
                posted_date: %DateTime{
@@ -58,6 +59,7 @@ defmodule Ofx.Parser.TransactionTest do
                %{
                  fit_id: "20210121001",
                  check_number: "20210121001",
+                 ref_num: "",
                  memo: "DA  COMGAS 39309134",
                  name: "",
                  posted_date: %DateTime{
@@ -82,6 +84,7 @@ defmodule Ofx.Parser.TransactionTest do
                %{
                  fit_id: "20210121001",
                  check_number: "20210121001",
+                 ref_num: "",
                  memo: "DA  COMGAS 39309134",
                  name: "",
                  posted_date: %DateTime{
@@ -122,6 +125,7 @@ defmodule Ofx.Parser.TransactionTest do
                  amount: 34.0,
                  amount_type: :credit,
                  check_number: "20210121001",
+                 ref_num: "",
                  currency: "BRL",
                  fit_id: "20210121001",
                  int_positive_amount: 3400,
@@ -146,6 +150,7 @@ defmodule Ofx.Parser.TransactionTest do
                  amount: 34.0,
                  amount_type: :credit,
                  check_number: "20210121001",
+                 ref_num: "",
                  currency: "BRL",
                  fit_id: "20210121001",
                  int_positive_amount: 3400,
@@ -170,6 +175,7 @@ defmodule Ofx.Parser.TransactionTest do
                  amount: 34.0,
                  amount_type: :credit,
                  check_number: "20210121001",
+                 ref_num: "",
                  currency: "BRL",
                  fit_id: "20210121001",
                  int_positive_amount: 3400,
@@ -215,6 +221,7 @@ defmodule Ofx.Parser.TransactionTest do
                amount: -34.34,
                amount_type: :debit,
                check_number: "",
+               ref_num: "",
                currency: "BHD",
                fit_id: "",
                int_positive_amount: 34_340,
