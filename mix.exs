@@ -1,7 +1,7 @@
 defmodule Ofx.MixProject do
   use Mix.Project
 
-  @version "0.0.8"
+  @version "0.0.9"
   @description "A lib to parse and generate OFX data"
   @links %{"GitHub" => "https://github.com/danielwsx64/ofx"}
 
@@ -33,7 +33,7 @@ defmodule Ofx.MixProject do
 
   defp deps do
     [
-      {:sweet_xml, "~> 0.6.6"},
+      {:sweet_xml, ">= 0.6.6"},
 
       # Dev/Test dependencies
 
