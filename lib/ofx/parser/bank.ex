@@ -60,6 +60,10 @@ defmodule Ofx.Parser.Bank do
     }
   end
 
+  defp build_balance("", _balance_date, _currency) do
+    nil
+  end
+
   defp build_balance(balance, balance_date, currency) do
     %{
       date: balance_date,

@@ -472,6 +472,9 @@ defmodule Ofx.ParserTest do
       <BANKACCTFROM>
       <ACCTTYPE>CHECKING</ACCTTYPE>
       </BANKACCTFROM>
+      <LEDGERBAL>
+      <BALAMT>NaN</BALAMT>
+      </LEDGERBAL>
       </STMTRS>
       </STMTTRNRS>
       </BANKMSGSRSV1>
@@ -480,7 +483,7 @@ defmodule Ofx.ParserTest do
 
       result = Parser.parse(ofx_data)
 
-      assert result == {:error, %{data: "", message: "Amount is invalid or was not found"}}
+      assert result == {:error, %{data: "NaN", message: "Amount is invalid or was not found"}}
     end
   end
 
@@ -1026,6 +1029,9 @@ defmodule Ofx.ParserTest do
       <BANKACCTFROM>
       <ACCTTYPE>CHECKING</ACCTTYPE>
       </BANKACCTFROM>
+      <LEDGERBAL>
+      <BALAMT>NaN</BALAMT>
+      </LEDGERBAL>
       </STMTRS>
       </STMTTRNRS>
       </BANKMSGSRSV1>
