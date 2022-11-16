@@ -274,6 +274,46 @@ defmodule Ofx.Parser.BankTest do
              ]
     end
 
+    test "returns status as nil when there is no status info" do
+      bank_msg = """
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      """
+
+      bank_example =
+        bank_msg
+        |> SweetXml.parse()
+        |> SweetXml.xpath(~x"//BANKMSGSRSV1")
+
+      result = Bank.format(bank_example)
+
+      assert result == [
+               %{
+                 account_id: "",
+                 account_type: "checking",
+                 balance: nil,
+                 currency: "BRL",
+                 description: "",
+                 request_id: "",
+                 routing_number: "",
+                 status: nil,
+                 transactions: %{
+                   end_date: nil,
+                   list: [],
+                   start_date: nil
+                 }
+               }
+             ]
+    end
+
     test "raise exception for invalid staus code" do
       bank_msg = """
       <BANKMSGSRSV1>

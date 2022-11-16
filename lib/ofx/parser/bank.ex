@@ -73,6 +73,10 @@ defmodule Ofx.Parser.Bank do
     }
   end
 
+  defp build_status("", "") do
+    nil
+  end
+
   defp build_status(code, severity) do
     %{
       code: String.to_integer(code),
