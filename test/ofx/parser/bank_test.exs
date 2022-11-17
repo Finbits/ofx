@@ -172,6 +172,148 @@ defmodule Ofx.Parser.BankTest do
              ]
     end
 
+    test "returns date as nil when there is not date on balance info" do
+      bank_msg = """
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STATUS>
+      <CODE>0</CODE>
+      <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      <LEDGERBAL>
+      <BALAMT>0.00</BALAMT>
+      </LEDGERBAL>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      """
+
+      bank_example =
+        bank_msg
+        |> SweetXml.parse()
+        |> SweetXml.xpath(~x"//BANKMSGSRSV1")
+
+      result = Bank.format(bank_example)
+
+      assert result == [
+               %{
+                 account_id: "",
+                 account_type: "checking",
+                 balance: %{
+                   amount: 0.0,
+                   amount_type: :credit,
+                   date: nil,
+                   int_positive_amount: 0
+                 },
+                 currency: "BRL",
+                 description: "",
+                 request_id: "",
+                 routing_number: "",
+                 status: %{
+                   code: 0,
+                   severity: :info
+                 },
+                 transactions: %{
+                   end_date: nil,
+                   list: [],
+                   start_date: nil
+                 }
+               }
+             ]
+    end
+
+    test "returns balance as nil when there is no balance info" do
+      bank_msg = """
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STATUS>
+      <CODE>0</CODE>
+      <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      """
+
+      bank_example =
+        bank_msg
+        |> SweetXml.parse()
+        |> SweetXml.xpath(~x"//BANKMSGSRSV1")
+
+      result = Bank.format(bank_example)
+
+      assert result == [
+               %{
+                 account_id: "",
+                 account_type: "checking",
+                 balance: nil,
+                 currency: "BRL",
+                 description: "",
+                 request_id: "",
+                 routing_number: "",
+                 status: %{
+                   code: 0,
+                   severity: :info
+                 },
+                 transactions: %{
+                   end_date: nil,
+                   list: [],
+                   start_date: nil
+                 }
+               }
+             ]
+    end
+
+    test "returns status as nil when there is no status info" do
+      bank_msg = """
+      <BANKMSGSRSV1>
+      <STMTTRNRS>
+      <STMTRS>
+      <CURDEF>BRL</CURDEF>
+      <BANKACCTFROM>
+      <ACCTTYPE>CHECKING</ACCTTYPE>
+      </BANKACCTFROM>
+      </STMTRS>
+      </STMTTRNRS>
+      </BANKMSGSRSV1>
+      """
+
+      bank_example =
+        bank_msg
+        |> SweetXml.parse()
+        |> SweetXml.xpath(~x"//BANKMSGSRSV1")
+
+      result = Bank.format(bank_example)
+
+      assert result == [
+               %{
+                 account_id: "",
+                 account_type: "checking",
+                 balance: nil,
+                 currency: "BRL",
+                 description: "",
+                 request_id: "",
+                 routing_number: "",
+                 status: nil,
+                 transactions: %{
+                   end_date: nil,
+                   list: [],
+                   start_date: nil
+                 }
+               }
+             ]
+    end
+
     test "raise exception for invalid staus code" do
       bank_msg = """
       <BANKMSGSRSV1>
@@ -249,6 +391,9 @@ defmodule Ofx.Parser.BankTest do
       <BANKACCTFROM>
       <ACCTTYPE>CHECKING</ACCTTYPE>
       </BANKACCTFROM>
+      <LEDGERBAL>
+      <BALAMT>NaN</BALAMT>
+      </LEDGERBAL>
       </STMTRS>
       </STMTTRNRS>
       </BANKMSGSRSV1>
@@ -262,61 +407,6 @@ defmodule Ofx.Parser.BankTest do
       assert_raise Error, "Amount is invalid or was not found", fn ->
         Bank.format(bank_example)
       end
-    end
-
-    test "returns date as nil when there is not date on balance info" do
-      bank_msg = """
-      <BANKMSGSRSV1>
-      <STMTTRNRS>
-      <STATUS>
-      <CODE>0</CODE>
-      <SEVERITY>INFO</SEVERITY>
-      </STATUS>
-      <STMTRS>
-      <CURDEF>BRL</CURDEF>
-      <BANKACCTFROM>
-      <ACCTTYPE>CHECKING</ACCTTYPE>
-      </BANKACCTFROM>
-      <LEDGERBAL>
-      <BALAMT>0.00</BALAMT>
-      </LEDGERBAL>
-      </STMTRS>
-      </STMTTRNRS>
-      </BANKMSGSRSV1>
-      """
-
-      bank_example =
-        bank_msg
-        |> SweetXml.parse()
-        |> SweetXml.xpath(~x"//BANKMSGSRSV1")
-
-      result = Bank.format(bank_example)
-
-      assert result == [
-               %{
-                 account_id: "",
-                 account_type: "checking",
-                 balance: %{
-                   amount: 0.0,
-                   amount_type: :credit,
-                   date: nil,
-                   int_positive_amount: 0
-                 },
-                 currency: "BRL",
-                 description: "",
-                 request_id: "",
-                 routing_number: "",
-                 status: %{
-                   code: 0,
-                   severity: :info
-                 },
-                 transactions: %{
-                   end_date: nil,
-                   list: [],
-                   start_date: nil
-                 }
-               }
-             ]
     end
   end
 end

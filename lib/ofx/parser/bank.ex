@@ -60,6 +60,10 @@ defmodule Ofx.Parser.Bank do
     }
   end
 
+  defp build_balance("", _balance_date, _currency) do
+    nil
+  end
+
   defp build_balance(balance, balance_date, currency) do
     %{
       date: balance_date,
@@ -67,6 +71,10 @@ defmodule Ofx.Parser.Bank do
       int_positive_amount: Currency.amount_to_positive_integer(balance, currency),
       amount_type: Currency.amount_type(balance)
     }
+  end
+
+  defp build_status("", "") do
+    nil
   end
 
   defp build_status(code, severity) do
