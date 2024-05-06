@@ -91,11 +91,19 @@ defmodule Ofx.Parser.CurrencyTest do
       negative_with_spaces = " - 90.00"
       positive = "90.00"
       positive_with_spaces = " 90.00"
+      negative_less_than_1_with_comma = "-0,87"
+      positive_less_than_1_with_comma = "0,01"
+      negative_less_than_1_with_dot = "-0.17"
+      positive_less_than_1_with_dot = "0.09"
 
       assert Currency.amount_to_float(negative) == -90.0
       assert Currency.amount_to_float(negative_with_spaces) == -90.0
       assert Currency.amount_to_float(positive) == 90.0
-      assert Currency.amount_to_float(positive_with_spaces) == 90.0
+      assert Currency.amount_to_float(positive_with_spaces) == 90.00
+      assert Currency.amount_to_float(negative_less_than_1_with_comma) == -0.87
+      assert Currency.amount_to_float(positive_less_than_1_with_comma) == 0.01
+      assert Currency.amount_to_float(negative_less_than_1_with_dot) == -0.17
+      assert Currency.amount_to_float(positive_less_than_1_with_dot) == 0.09
     end
 
     test "raise exception when amount is invalid" do
