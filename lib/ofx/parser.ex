@@ -1,4 +1,6 @@
 defmodule Ofx.Parser do
+  @moduledoc false
+
   import Ofx.Parser.Utils
 
   import SweetXml, only: [xpath: 2, sigil_x: 2]
