@@ -137,6 +137,25 @@ defmodule Ofx.Parser.DateTimeTest do
                }
     end
 
+    test "format date without time with BRL format" do
+      date_without_time = "07/02/2025"
+
+      assert Datetime.format(date_without_time) ==
+               %DateTime{
+                 year: 2025,
+                 month: 2,
+                 day: 7,
+                 hour: 0,
+                 minute: 0,
+                 second: 0,
+                 microsecond: {0, 3},
+                 time_zone: "UTC",
+                 zone_abbr: "UTC",
+                 utc_offset: 0,
+                 std_offset: 0
+               }
+    end
+
     test "format EST timezone" do
       est_tz = "20210218100000[-05:EST]"
 
