@@ -22,6 +22,7 @@ defmodule Ofx.Parser.Currency do
   def amount_to_float(amount) do
     {float, _rest} =
       amount
+      |> sanitize_string()
       |> String.replace(~r/\s/, "")
       |> String.replace(",", ".")
       |> Float.parse()
