@@ -58,6 +58,19 @@ defmodule Ofx.Parser.CurrencyTest do
       assert Currency.amount_to_positive_integer(negative, currency) == 500
     end
 
+    test "convert successfully when there R$ symbol" do
+      currency = "BRL"
+      without_decimal = "R$ 500"
+      one_decimal = "R$500.1"
+      two_decimals = "R$ 500.10 "
+      negative = "R$ -500.1"
+
+      assert Currency.amount_to_positive_integer(without_decimal, currency) == 50_000
+      assert Currency.amount_to_positive_integer(one_decimal, currency) == 50_010
+      assert Currency.amount_to_positive_integer(two_decimals, currency) == 50_010
+      assert Currency.amount_to_positive_integer(negative, currency) == 50_010
+    end
+
     test "raise exception when currency is invalid" do
       assert_raise Error, "Amount is invalid or currency is unknown", fn ->
         Currency.amount_to_positive_integer("100", "reais")

@@ -656,7 +656,7 @@ defmodule Ofx.ParserTest do
                          ref_num: "077",
                          currency: "BRL",
                          fit_id: "12/04/2021077",
-                         int_positive_amount: 15990,
+                         int_positive_amount: 15_990,
                          memo: "PAGAMENTO CASHBACK 9832-01",
                          name: "",
                          posted_date: %DateTime{
@@ -681,7 +681,7 @@ defmodule Ofx.ParserTest do
                          ref_num: "077",
                          currency: "BRL",
                          fit_id: "05/05/2021077",
-                         int_positive_amount: 15990,
+                         int_positive_amount: 15_990,
                          memo: "PAGAMENTO FATURA INTER - Pagamento Fatura Cartão Inter",
                          name: "",
                          posted_date: %DateTime{
@@ -731,7 +731,7 @@ defmodule Ofx.ParserTest do
                          ref_num: "077",
                          currency: "BRL",
                          fit_id: "07/06/2021077",
-                         int_positive_amount: 22000,
+                         int_positive_amount: 22_000,
                          memo: "PIX RECEBIDO - Cp :98127- Jonny",
                          name: "",
                          posted_date: %DateTime{
@@ -756,7 +756,7 @@ defmodule Ofx.ParserTest do
                          ref_num: "077",
                          currency: "BRL",
                          fit_id: "07/06/2021077",
-                         int_positive_amount: 21990,
+                         int_positive_amount: 21_990,
                          memo: "PAGAMENTO FATURA INTER - Débito Automático Fatura Cartão Inter",
                          name: "",
                          posted_date: %DateTime{

@@ -1,7 +1,7 @@
 defmodule Ofx.MixProject do
   use Mix.Project
 
-  @version "0.0.11"
+  @version "0.0.12"
   @description "A lib to parse and generate OFX data"
   @links %{"GitHub" => "https://github.com/danielwsx64/ofx"}
 

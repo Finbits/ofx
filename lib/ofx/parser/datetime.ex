@@ -53,6 +53,7 @@ defmodule Ofx.Parser.Datetime do
 
   def format(input) when is_binary(input) do
     input
+    |> format_date()
     |> to_struct()
     |> adjust_microsecond()
     |> adjust_time_zone()
@@ -65,6 +66,15 @@ defmodule Ofx.Parser.Datetime do
   end
 
   def format(input), do: raise_error(input)
+
+  defp format_date(input) do
+    if Regex.match?(~r/^\d{2}\/\d{2}\/\d{4}$/, input) do
+      [d, m, y] = String.split(input, "/")
+      "#{y}#{m}#{d}"
+    else
+      input
+    end
+  end
 
   defp to_struct(input) do
     case Regex.named_captures(@datetime_regex, input) do

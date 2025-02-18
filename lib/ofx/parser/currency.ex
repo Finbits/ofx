@@ -5,6 +5,7 @@ defmodule Ofx.Parser.Currency do
 
   def amount_to_positive_integer(amount, currency) do
     amount
+    |> sanitize_string()
     |> amount_to_float()
     |> remove_decimal(currency)
     |> abs()
@@ -21,6 +22,7 @@ defmodule Ofx.Parser.Currency do
   def amount_to_float(amount) do
     {float, _rest} =
       amount
+      |> sanitize_string()
       |> String.replace(~r/\s/, "")
       |> String.replace(",", ".")
       |> Float.parse()
@@ -186,5 +188,11 @@ defmodule Ofx.Parser.Currency do
     }
 
     currency_decimails[currency]
+  end
+
+  defp sanitize_string(str) do
+    str
+    |> String.replace("R$", "")
+    |> String.trim()
   end
 end
